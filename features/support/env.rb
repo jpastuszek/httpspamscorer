@@ -11,3 +11,6 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
 require 'httpspamscorer'
 
 require 'rspec/expectations'
+
+require 'cucumber-spawn-process/background_process_helpers'
+
