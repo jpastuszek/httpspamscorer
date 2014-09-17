@@ -1,0 +1,236 @@
+Delivered-To: jpastuszek@whatclinic.com
+Received: by 10.220.190.3 with SMTP id dg3csp13503vcb;
+        Thu, 14 Aug 2014 01:41:11 -0700 (PDT)
+X-Received: by 10.140.96.85 with SMTP id j79mr14277319qge.5.1408005671455;
+        Thu, 14 Aug 2014 01:41:11 -0700 (PDT)
+Return-Path: <352-NVO-562.0.22681.0.0.22444.7.52250158@potomac1050.mktomail.com>
+Received: from kidneybean.mktdns.com (kidneybean.mktdns.com. [199.15.213.126])
+        by mx.google.com with ESMTP id e7si5944070qaa.98.2014.08.14.01.41.11
+        for <jpastuszek@whatclinic.com>;
+        Thu, 14 Aug 2014 01:41:11 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 352-NVO-562.0.22681.0.0.22444.7.52250158@potomac1050.mktomail.com designates 199.15.213.126 as permitted sender) client-ip=199.15.213.126;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of 352-NVO-562.0.22681.0.0.22444.7.52250158@potomac1050.mktomail.com designates 199.15.213.126 as permitted sender) smtp.mail=352-NVO-562.0.22681.0.0.22444.7.52250158@potomac1050.mktomail.com;
+       dkim=pass header.i=@compuware.com
+Return-Path: <mzuiddamhoeboer@compuware.com>
+DKIM-Signature: v=1; a=rsa-sha256; d=compuware.com; s=m1; c=relaxed/relaxed;
+	q=dns/txt; i=@compuware.com; t=1408005671;
+	h=From:Subject:Date:To:MIME-Version:Content-Type;
+	bh=FN2XGZmgs8cfs+xJHgu746QFaGEs4lpfQ7EDMQ6Zv+0=;
+	b=EZgT59EI5ZKE0KJ2vgv4pfG8dqc6EgiuBF8Z9Lg5NB8vX+ZfCl46YZTlTZhZ6sSZ
+	IEK/VkardX3M3ukwHjyCGB7+YlTeK7/KuZph6QLwfWSIVzOcXlzv0wfjexkwcLAU
+	Sdd6rAUrnhjeVgogHgc/ADg0GiSNmxj5kOV2/A6731o=;
+X-MSFBL: anBhc3R1c3pla0B3aGF0Y2xpbmljLmNvbUBkdnAtMTk5LTE1LTIxMy0xMjZAYmct
+	YWJkLTYxQDM1Mi1OVk8tNTYyOjMwMjYzOjIyNjgxOjc4NjAxOjA6MjI0NDQ6Nzo1
+	MjI1MDE1OA==
+Received: from [10.1.12.141] ([10.1.12.141:44893] helo=abmas01.marketo.org)
+	by abmta01.marketo.org (envelope-from <mzuiddamhoeboer@compuware.com>)
+	(ecelerity 3.5.0.35861 r(Momo-dev:tip)) with ESMTP
+	id E3/BD-48737-7267CE35; Thu, 14 Aug 2014 03:41:11 -0500
+Date: Thu, 14 Aug 2014 03:41:11 -0500 (CDT)
+From: Meta Zuiddam-Hoeboer <mzuiddamhoeboer@compuware.com>
+Reply-To: mzuiddamhoeboer@compuware.com
+To: jpastuszek@whatclinic.com
+Message-ID: <74979283.1319139260.1408005671194.JavaMail.root@abmas01.marketo.org>
+Subject: Live webinar - DevOps at Sofico: 89% faster apps
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_1319139259_580648212.1408005671194"
+X-Report-Abuse: Please report abuse here: http://www.marketo.com/policy
+X-PVIQ: 000326-000790-000001-000000-041277
+X-Binding: bg-abd-61
+X-MarketoID: 352-NVO-562:30263:22681:78601:0:22444:7:52250158
+List-Unsubscribe: <mailto:OBLGOUBYHBVGI22EMRXU66CBOZJHONDLOBIWURL2INIUOVS2JUZUOVTJPJQWWMLMJNGG6PI.22681.22444.7@unsub-ab.mktomail.com>
+X-Mailfrom: 352-NVO-562.0.22681.0.0.22444.7.52250158@potomac1050.mktomail.com
+
+------=_Part_1319139259_580648212.1408005671194
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi Jakub,
+Sofico will be presenting at out next webinar on September 4th on how shift=
+ing to a DevOps culture enabled them to drive better software quality while=
+ reducing response times of their new GWT-based application by 89%.
+
+Sofico specializes in software solutions for automotive finance, leasing, f=
+leet and mobility management companies. Their Continuous Integration approa=
+ch now empowers them to run 100 performance tests every 4 hours, 600+ integ=
+ration tests per night, 200 builds per day and 120 automated application de=
+ployments every day.
+
+In this live webinar Jan Swaelens, System Architect at Sofico will elaborat=
+e on how their DevOps approach for their multi-device applications using We=
+bSphere and Oracle help them to:
+
+
+ - Ensure that developers write better code=20
+ - Automate the measurements and verification of code quality
+ - Embrace a tighter communication culture between development and operatio=
+n teams
+
+
+
+Live webinar: Sofico =E2=80=93 making DevOps happen <http://offers2.compuwa=
+re.com/APM_DTM_OPS_15Q2_WC_SOFICO_UK_Registration.html?utm_source=3Dihd&utm=
+_medium=3Demail>
+
+Thursday, 4th September, 9.30am (UK) / 10.30am (Central Europe).
+
+Register now <http://offers2.compuware.com/APM_DTM_OPS_15Q2_WC_SOFICO_UK_Re=
+gistration.html?utm_source=3Dihd&utm_medium=3Demail> to attend this live we=
+binar!
+
+Kind regards,
+META ZUIDDAM-HOEBOER  |   Marketing Manager Benelux  |  Compuware APM
+
+mzuiddamhoeboer@compuware.com | M: +31 20 3118860=20
+=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=
+=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=
+=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=
+=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=
+=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=
+=A6
+This email was sent to jpastuszek@whatclinic.com.
+
+
+
+
+
+Opt-out <http://offers2.compuware.com/unsubscribe_en.html?mkt_unsubscribe=
+=3D1&mkt_tok=3D3RkMMJWWfF9wsRokuarBc%2B%2FhmjTEU5z17u4vXKe3h5d41El3fuXBP2Xq=
+jvpVQcBgMb3KRw8FHZNpywVWM8TIL9USt9trJAznDmk%3D> | Update Your Subscriptions=
+ <http://offers2.compuware.com/pc_lp_en.html?mkt_tok=3D3RkMMJWWfF9wsRokuarB=
+c%2B%2FhmjTEU5z17u4vXKe3h5d41El3fuXBP2XqjvpVQcBgMb3KRw8FHZNpywVWM8TIL9USt9t=
+rJAznDmk%3D> | Contact Us <http://offers2.compuware.com/ContactUs-APM.html>=
+ | Forward to a Colleague <http://em.compuware.com/v/wVEOIxtNu0000uvR30e1z0=
+F>
+Compuware Corporation, Quantum, 60 Norden Road, Maidenhead, Berkshire, SL6 =
+4AY | Tel. +44 1628 611000
+This e-mail was sent to jpastuszek@whatclinic.com.
+
+=C2=A9 2014 Compuware Corporation, One Campus Martius, Detroit, MI 48226
+
+To remove yourself from all future mailings, unsubscribe here <http://offer=
+s2.compuware.com/unsubscribe_en.html?mkt_unsubscribe=3D1&mkt_tok=3D3RkMMJWW=
+fF9wsRokuarBc%2B%2FhmjTEU5z17u4vXKe3h5d41El3fuXBP2XqjvpVQcBgMb3KRw8FHZNpywV=
+WM8TIL9USt9trJAznDmk%3D>.
+
+All Compuware products and services listed within are trademarks or registe=
+red trademarks of Compuware Corporation. Other names may be trademarks of t=
+heir respective owners.
+
+If you no longer wish to receive these emails, go to the following link to =
+unsubscribe: http://offers2.compuware.com/pc_lp_en.html?mkt_tok=3D3RkMMJWWf=
+F9wsRokuarBc%2B%2FhmjTEU5z17u4vXKe3h5d41El3fuXBP2XqjvpVQcBgMb3KRw8FHZNpywVW=
+M8TIL9USt9trJAznDmk%3D.
+
+------=_Part_1319139259_580648212.1408005671194
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html><head>
+<title>Your Email Title</title>
+</head>
+<body ><table width="100%" border="0" cellspacing="0" cellpadding="0" ><tr ><td style="font-family:Arial, Helvetica, Sans-serif; font-size:12px; color:#000; " ><div id="salutation" class="mktEditable" >Hi Jakub,</div>
+</td>
+</tr>
+<tr>
+<td height="10"></td>
+</tr>
+<tr ><td style="font-family:Arial, Helvetica, Sans-serif; font-size:12px; color:#000; " ><div class="mktEditable" id="email_body" ><p><strong></strong><strong>Sofico</strong> will be presenting at out next webinar on September 4th on how shifting to a DevOps culture enabled them to drive <strong>better software quality</strong> while <strong>reducing response times of their new GWT-based application by 89%.</strong></p>
+<p>Sofico specializes in software solutions for automotive finance, leasing, fleet and mobility management companies. Their Continuous Integration approach now empowers them to run <strong>100</strong> performance tests every <strong>4</strong> hours, <strong>600+</strong> integration tests per night,<strong> 200</strong> builds per day and 120 automated application deployments every day.</p>
+<p>In this live webinar <strong>Jan Swaelens, System Architect at Sofico</strong> will elaborate on how their DevOps approach for their multi-device applications using WebSphere and Oracle help them to:</p>
+<ul>
+<li>Ensure that developers write <strong>better code</strong> </li>
+<li><strong>Automate</strong> the measurements and verification of code quality</li>
+<li>Embrace a<strong> tighter communication culture</strong> between development and operation teams</li>
+</ul>
+<p><a href=
+"http://em.compuware.com/yvGNEeuI0t0uOVi0xB00310"
+>Live webinar: Sofico &ndash; making DevOps happen</a></p>
+<p>Thursday, 4th September, 9.30am (UK) / 10.30am (Central Europe).</p>
+<p><a href=
+"http://em.compuware.com/yvGNEeuI0t0uOVi0xB00310"
+>Register now</a> to attend this live webinar!</p>
+<p>Kind regards,</p></div>
+</td>
+</tr>
+<tr>
+<td height="20"></td>
+</tr>
+<tr ><td ><div id="email_signature" class="mktEditable" ><table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #58595b; text-align: left;"><strong>META </strong><strong>ZUIDDAM-HOEBOER&nbsp; | &nbsp; Marketing Manager Benelux&nbsp; |&nbsp; Compuware APM</strong></td>
+</tr>
+<tr>
+<td style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #58595b;" height="5"><span style="background-color: #ffffff;"><img style="display: block; line-height: 0;" src="http://offers2.compuware.com/rs/compuware/images/spacer.png" border="0" alt="" width="1" height="5" /></span></td>
+</tr>
+<tr>
+<td style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #58595b; text-align: left;"><a href=
+"http://em.compuware.com/x0N0000G1jv3uIV0CtxuEOe"
+>mzuiddamhoeboer@compuware.com</a>&nbsp; | M: <span style="color: #58595b; font-size: 9pt; font-family: 'Arial','sans-serif';" lang="EN-US">+31 20 3118860 </span></td>
+</tr>
+<tr>
+<td style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #7f7f7f; line-height: .8em;">&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;</td>
+</tr>
+<tr>
+<td height="5"></td>
+</tr>
+<tr>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</td>
+</tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" ><tr>
+<td height="40">&nbsp;</td>
+</tr>
+<tr ><td width="100%" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#999999; text-align:left; " ><div id="outlook_subscriptions" class="mktEditable" ><table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #999999; text-align: left;"><a style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;" href=
+"http://em.compuware.com/AG3D0xNV10Itvue00u0k0EO"
+>Opt-out</a> | <a href=
+"http://em.compuware.com/yvGNEeuI0t0uOVl0xE00310"
+>Update Your Subscriptions</a></td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+<tr>
+<td width="100%" height="10"></td>
+</tr>
+<tr ><td width="100%" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#999999; text-align:left; " ><div id="outlook_address" class="mktEditable" ><table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #999999; text-align: left;"><strong>Compuware Corporation</strong>, Quantum, 60 Norden Road, Maidenhead, Berkshire, SL6 4AY | Tel. <a style="color: 999999; text-decoration: none;" href=
+"http://em.compuware.com/n0Nu0mF01eIu0OV0Ev30tGx"
+>+44 1628 611000</a></td>
+</tr>
+</tbody>
+</table></div>
+</td>
+</tr>
+<tr>
+<td width="100%" height="10"></td>
+</tr>
+<tr ><td width="100%" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#999999; text-align:left; " ><div id="outlook_legal" class="mktEditable" ><table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #999999; text-align: left;">&copy; 2014 Compuware Corporation. All rights reserved.<br /> All Compuware products and services listed within are trademarks or registered trademarks of Compuware Corporation. Other names may be trademarks of their respective owners.</td>
+</tr>
+</tbody>
+</table></div>
+</td>
+</tr>
+</table>
+
+<IMG SRC="http://em.compuware.com/trk?t=1&mid=MzUyLU5WTy01NjI6MzAyNjM6MjI2ODE6Nzg2MDE6MDoyMjQ0NDo3OjUyMjUwMTU4OmpwYXN0dXN6ZWtAd2hhdGNsaW5pYy5jb20%3D" WIDTH="1" HEIGHT="1" BORDER="0" ALT="" />
+
+<!-- The unsubscribe is added in the message template -->
+</body>
+</html>
+------=_Part_1319139259_580648212.1408005671194--

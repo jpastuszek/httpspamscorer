@@ -2,5 +2,7 @@
 
 echo "ARGS: $@"
 
+export CONFDIR=/tmp
+
 # use system binary
 exec rspamd $@
