@@ -12,5 +12,5 @@ require 'httpspamscorer'
 
 require 'rspec/expectations'
 
-require 'cucumber-spawn-process/background_process_helpers'
+require 'cucumber-spawn-process'
 

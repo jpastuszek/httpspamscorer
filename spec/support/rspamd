@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "ARGS: $@"
+
+# use system binary
+exec rspamd $@
