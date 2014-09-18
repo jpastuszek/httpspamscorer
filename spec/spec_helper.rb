@@ -50,10 +50,18 @@ module RSpamd
 			process.argument '--config', '<project directory>/spec/support/rspamd.conf.d/rspamd.conf'
 
 			process.ready_when_log_includes 'main: calling sigsuspend'
+
+			# get rid of learned stats
+			process.refresh_command 'test -f bayes.spam && rm -f bayes.spam'
 			process.logging_enabled
 		end
 		.start
 		.wait_ready
+	end
+
+	before (:each) do
+		rspamd.refresh
+		rspamd.restart.wait_ready
 	end
 end
 

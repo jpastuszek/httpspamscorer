@@ -5,7 +5,7 @@ gem 'unicorn-cuba-base', '~> 1.2.2'
 #gem 'unicorn-cuba-base', path: '../unicorn-cuba-base'
 
 group :development do
-	gem 'faraday', '>= 0.8'
+	gem 'excon', '>= 0.39'
 	gem 'rspec', '~> 3.1'
 	gem 'cucumber', '>= 0'
 	gem 'jeweler', '~> 1.8.4'

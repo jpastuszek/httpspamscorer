@@ -1,6 +1,7 @@
 require_relative 'spec_helper'
 
 require 'socket'
+require 'excon'
 
 describe 'rspamd legacy (spamd) client protocol', rspamd: :legacy do
 	describe 'normal process' do
@@ -30,50 +31,61 @@ describe 'rspamd legacy (spamd) client protocol', rspamd: :legacy do
 	end
 end
 
-require 'faraday'
-
 describe 'rspamd HTTP client protocol', rspamd: :server do
 	let :spam do
 		File.read('spec/support/spam1.eml')
 	end
 
-	describe 'normal process' do
-		subject do
-			Faraday.new(:url => 'http://localhost:11333') do |faraday|
-				faraday.options[:timeout] = 2
-				faraday.adapter Faraday.default_adapter
-			end
-		end
+	let :normal do
+		Excon.new('http://localhost:11333', read_timeout: 4)
+	end
 
-		it 'should ping' do
-			p subject.get '/ping'
-		end
+	let :control do
+		Excon.new('http://localhost:11334', read_timeout: 4)
+	end
+
+	describe 'normal process' do
 
 		it 'should score email' do
-			resp = subject.post do |req|
-				req.body = spam
-			end
-
-			expect(resp.body).to include('Metric: ')
+			resp = normal.post body: spam
+			expect(resp.body).to include 'Metric: '
 		end
 	end
 
 	describe 'controller process' do
-		subject do
-			Faraday.new(:url => 'http://localhost:11334') do |faraday|
-				faraday.options[:timeout] = 2
-				faraday.adapter Faraday.default_adapter
-				faraday.headers['Host'] = 'localhost'
-				faraday.headers['Accept'] = 'application/json'
-			end
+		it 'should provide stats' do
+			# GET / HTTP/1.0
+			# Command: stat
+			resp = control.get headers: {'Command' => 'stat'}
+			expect(resp.body).to include 'Messages scanned:'
 		end
 
-		it 'should' do
-			p subject
-			resp = subject.get '/stat'
-			p resp
-			p resp.status
-			p resp.body
+		it 'should learn spam' do
+			# GET / HTTP/1.0
+			# Command: learn_spam
+			# Content-Length: 414
+			# Classifier: bayes
+			resp = control.get headers: { 'Command' => 'learn_spam', 'Classifier' => 'bayes' }, body: spam
+			expect(resp.status).to eq 200
+
+			# should be spam by bayes
+			resp = normal.post body: spam
+			expect(resp.body).to include 'Symbol: BAYES_SPAM'
+			expect(resp.body).not_to include 'Symbol: BAYES_HAM'
+		end
+
+		it 'should learn ham' do
+			# GET / HTTP/1.0
+			# Command: learn_ham
+			# Content-Length: 414
+			# Classifier: bayes
+			resp = control.get headers: { 'Command' => 'learn_ham', 'Classifier' => 'bayes' }, body: spam
+			expect(resp.status).to eq 200
+
+			# should be spam by bayes
+			resp = normal.post body: spam
+			expect(resp.body).not_to include 'Symbol: BAYES_SPAM'
+			expect(resp.body).to include 'Symbol: BAYES_HAM'
 		end
 	end
 end
