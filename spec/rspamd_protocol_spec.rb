@@ -2,34 +2,7 @@ require_relative 'spec_helper'
 
 require 'socket'
 require 'excon'
-
-describe 'rspamd legacy (spamd) client protocol', rspamd: :legacy do
-	describe 'normal process' do
-		subject do
-			TCPSocket.new('localhost', 41333)
-		end
-
-		let :spam do
-			File.read('spec/support/spam1.eml')
-		end
-
-		it 'should respond to ping' do
-			subject.puts 'PING RSPAMC/1.1'
-			subject.puts
-			expect(subject.read).to include('PONG')
-		end
-
-		it 'should check an email' do
-			subject.puts 'CHECK RSPAMC/1.1'
-			subject.puts "Content-Length: #{spam.length}"
-			subject.puts
-			subject.write spam
-
-			#puts subject.read
-			expect(subject.read).to include('Metric: ')
-		end
-	end
-end
+require 'json'
 
 describe 'rspamd HTTP client protocol', rspamd: :server do
 	let :spam do
@@ -45,68 +18,106 @@ describe 'rspamd HTTP client protocol', rspamd: :server do
 	end
 
 	describe 'normal process' do
-
 		it 'should score email' do
-			# Ip: 123.123.123.123
-			# User: fdas@efa.com
+			# POST /check HTTP/1.0
+			# Content-Length: 414
 			# From: afds@fda.com
+			# Hostname: fsda
 			# Deliver-To: test
+			# User: fdas@efa.com
+			# Ip: 123.123.123.123
 			# Rcpt: dfa@fas.com
-			resp = normal.get headers: {
-				'Command' => 'symbols',
+			# Helo: fdas
+
+			resp = normal.post path: '/check',
+			headers: {
+				'Hostname' => 'fdsa', # SMTP hostname
 				'User' => 'fdas@efa.com',
 				'Deliver-To' => 'fads',
+				'Helo' => 'fdsa', # verify SMTP hello message - HFILTER_HELO_NOT_FQDN
 				'Ip' => '192.168.0.1', # verify IP with SPF - R_SPF_SOFTFAIL
 				'From' => 'bfalsdh@compuware.com', # verify sender with email - FORGED_SENDER
 				'Rcpt' => 'dfas@whatclinic.com' # verify recipient with email - FORGED_RECIPIENTS
 			}, body: spam
 
-			puts resp.body
-			expect(resp.body).to include(
-				'Metric: ',
-				'Symbol: R_SPF_SOFTFAIL',
-				'Symbol: FORGED_RECIPIENTS',
-				'Symbol: FORGED_SENDER'
+			#pp JSON.parse(resp.body)
+
+			expect(JSON.parse(resp.body)).to a_collection_including(
+				'default' => a_collection_including(
+					'is_spam' => false,
+					'is_skipped' => false,
+					'score' => an_instance_of(Float),
+					'required_score' => an_instance_of(Float),
+					'action' => 'no action',
+					'HFILTER_HELO_NOT_FQDN' => a_collection_including('score' => an_instance_of(Float)),
+					'FORGED_SENDER' => a_collection_including('score' => an_instance_of(Float)),
+					'FORGED_RECIPIENTS' => a_collection_including('score' => an_instance_of(Float))
+				)
 			)
 
-			puts rspamd.log_file.to_s
+			#puts rspamd.log_file.to_s
 		end
 	end
 
 	describe 'controller process' do
 		it 'should provide stats' do
-			# GET / HTTP/1.0
-			# Command: stat
-			resp = control.get headers: {'Command' => 'stat'}
-			expect(resp.body).to include 'Messages scanned:'
+			# GET /stat HTTP/1.0
+			resp = control.get path: '/stat'
+
+			#pp JSON.parse(resp.body)
+
+			expect(JSON.parse(resp.body)).to a_collection_including(
+				'scanned' => an_instance_of(Fixnum),
+				'ham_count' => an_instance_of(Fixnum),
+				'spam_count' => an_instance_of(Fixnum),
+				'learned' => an_instance_of(Fixnum)
+			)
 		end
 
 		it 'should learn spam' do
-			# GET / HTTP/1.0
-			# Command: learn_spam
+			# POST /learnspam HTTP/1.0
 			# Content-Length: 414
-			# Classifier: bayes
-			resp = control.get headers: { 'Command' => 'learn_spam', 'Classifier' => 'bayes' }, body: spam
+
+			resp = control.post path: '/learnspam', body: spam
 			expect(resp.status).to eq 200
 
 			# should be spam by bayes
-			resp = normal.post body: spam
-			expect(resp.body).to include 'Symbol: BAYES_SPAM'
-			expect(resp.body).not_to include 'Symbol: BAYES_HAM'
+			resp = normal.post path: '/check', body: spam
+
+			expect(JSON.parse(resp.body)).to a_collection_including(
+				'default' => a_collection_including(
+					'BAYES_SPAM' => a_collection_including('score' => an_instance_of(Float)),
+				)
+			)
+
+			expect(JSON.parse(resp.body)).not_to a_collection_including(
+				'default' => a_collection_including(
+					'BAYES_HAM' => a_collection_including('score' => an_instance_of(Float)),
+				)
+			)
 		end
 
 		it 'should learn ham' do
-			# GET / HTTP/1.0
-			# Command: learn_ham
+			# POST /learnham HTTP/1.0
 			# Content-Length: 414
-			# Classifier: bayes
-			resp = control.get headers: { 'Command' => 'learn_ham', 'Classifier' => 'bayes' }, body: spam
+
+			resp = control.post path: '/learnham', body: spam
 			expect(resp.status).to eq 200
 
 			# should be spam by bayes
-			resp = normal.post body: spam
-			expect(resp.body).not_to include 'Symbol: BAYES_SPAM'
-			expect(resp.body).to include 'Symbol: BAYES_HAM'
+			resp = normal.post path: '/check', body: spam
+
+			expect(JSON.parse(resp.body)).not_to a_collection_including(
+				'default' => a_collection_including(
+					'BAYES_SPAM' => a_collection_including('score' => an_instance_of(Float)),
+				)
+			)
+
+			expect(JSON.parse(resp.body)).to a_collection_including(
+				'default' => a_collection_including(
+					'BAYES_HAM' => a_collection_including('score' => an_instance_of(Float)),
+				)
+			)
 		end
 	end
 end
