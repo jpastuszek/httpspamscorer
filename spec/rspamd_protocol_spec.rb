@@ -80,6 +80,7 @@ describe 'rspamd HTTP client protocol', rspamd: :server do
 
 			resp = control.post path: '/learnspam', body: spam
 			expect(resp.status).to eq 200
+			expect(JSON.parse(resp.body)).to eq({'success' => true})
 
 			# should be spam by bayes
 			resp = normal.post path: '/check', body: spam
@@ -103,6 +104,7 @@ describe 'rspamd HTTP client protocol', rspamd: :server do
 
 			resp = control.post path: '/learnham', body: spam
 			expect(resp.status).to eq 200
+			expect(JSON.parse(resp.body)).to eq({'success' => true})
 
 			# should be spam by bayes
 			resp = normal.post path: '/check', body: spam
