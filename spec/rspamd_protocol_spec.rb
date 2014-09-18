@@ -47,8 +47,29 @@ describe 'rspamd HTTP client protocol', rspamd: :server do
 	describe 'normal process' do
 
 		it 'should score email' do
-			resp = normal.post body: spam
-			expect(resp.body).to include 'Metric: '
+			# Ip: 123.123.123.123
+			# User: fdas@efa.com
+			# From: afds@fda.com
+			# Deliver-To: test
+			# Rcpt: dfa@fas.com
+			resp = normal.get headers: {
+				'Command' => 'symbols',
+				'User' => 'fdas@efa.com',
+				'Deliver-To' => 'fads',
+				'Ip' => '192.168.0.1', # verify IP with SPF - R_SPF_SOFTFAIL
+				'From' => 'bfalsdh@compuware.com', # verify sender with email - FORGED_SENDER
+				'Rcpt' => 'dfas@whatclinic.com' # verify recipient with email - FORGED_RECIPIENTS
+			}, body: spam
+
+			puts resp.body
+			expect(resp.body).to include(
+				'Metric: ',
+				'Symbol: R_SPF_SOFTFAIL',
+				'Symbol: FORGED_RECIPIENTS',
+				'Symbol: FORGED_SENDER'
+			)
+
+			puts rspamd.log_file.to_s
 		end
 	end
 

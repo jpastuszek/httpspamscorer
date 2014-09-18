@@ -53,7 +53,7 @@ module RSpamd
 
 			# get rid of learned stats
 			process.refresh_command 'test -f bayes.spam && rm -f bayes.spam'
-			process.logging_enabled
+			#process.logging_enabled
 		end
 		.start
 		.wait_ready
