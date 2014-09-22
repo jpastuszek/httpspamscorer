@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+require 'unicorn-cuba-base'
+require 'excon'
+
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+
+Application.new('httpspamscorer', port: 4000) do
+	cli do
+		description 'Spam Soring HTTP server'
+		version (Pathname.new(__FILE__).dirname + '..' + 'VERSION').read
+	end
+
+	settings do |settings|
+	end
+
+	main do |settings|
+		class HTTPSpamScorer < Controller
+			extend Stats
+			def_stats(
+				:workers,
+				:total_requests,
+				:total_errors
+			)
+
+			raindrops_stats = Raindrops::Middleware::Stats.new
+			self.use Raindrops::Middleware, stats: raindrops_stats
+
+			StatsReporter << HTTPSpamScorer.stats
+			StatsReporter << raindrops_stats
+			#StatsReporter << Plugin::Thumbnailer::Service.stats
+			StatsReporter << Plugin::ResponseHelpers.stats
+
+			normal = Excon.new('http://dev.jp-spam:11333', read_timeout: 4) #, :persistent => true)
+
+			self.define do
+				#HTTPSpamScorer.stats.incr_total_requests
+				#on error? do
+					#HTTPSpamScorer.stats.incr_total_errors
+					#run ErrorReporter
+				#end
+
+				on 'stats' do
+					run StatsReporter
+				end
+
+				on 'health_check' do
+					write_plain 200, 'HTTP Spam Scorer OK'
+				end
+
+				on root do
+					write_plain 200, 'HTTP Spam Scorer'
+				end
+
+				on true do
+					resp = normal.post path: '/check',
+					headers: {
+					}, body: req.body.read
+
+					write_plain 200, resp.body
+				end
+			end
+		end
+
+		HTTPSpamScorer
+	end
+
+	after_fork do |server, worker|
+		HTTPSpamScorer.stats.incr_workers
+	end
+end
