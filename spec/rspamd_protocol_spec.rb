@@ -32,10 +32,10 @@ describe 'rspamd HTTP client protocol', rspamd: :server do
 			resp = normal.post path: '/check',
 			headers: {
 				'Hostname' => 'fdsa', # SMTP hostname
-				'User' => 'fdas@efa.com',
+				'User' => 'fdas@efa.com', # for logging
 				'Deliver-To' => 'fads',
 				'Helo' => 'fdsa', # verify SMTP hello message - HFILTER_HELO_NOT_FQDN
-				'Ip' => '192.168.0.1', # verify IP with SPF - R_SPF_SOFTFAIL
+				'Ip' => '192.168.0.1', # verify IP with SPF - R_SPF_SOFTFAIL and backlists (Spamhouse etc.)
 				'From' => 'bfalsdh@compuware.com', # verify sender with email - FORGED_SENDER
 				'Rcpt' => 'dfas@whatclinic.com' # verify recipient with email - FORGED_RECIPIENTS
 			}, body: spam
@@ -120,6 +120,14 @@ describe 'rspamd HTTP client protocol', rspamd: :server do
 					'BAYES_HAM' => a_collection_including('score' => an_instance_of(Float)),
 				)
 			)
+		end
+
+		it 'should add fuzzy hash to given store (flag)' do
+			# POST /fuzzyadd HTTP/1.0
+			# Content-Length: 414
+			# Flag: 1
+			pending 'no in use at the moment'
+			fail
 		end
 	end
 end
