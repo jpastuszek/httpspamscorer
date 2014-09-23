@@ -1,8 +1,6 @@
 require_relative 'spec_helper'
 
 require 'socket'
-require 'excon'
-require 'json'
 
 describe 'rspamd HTTP client protocol', rspamd: :server do
 	let :spam do

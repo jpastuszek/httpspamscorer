@@ -10,6 +10,8 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 require 'cucumber-spawn-process'
 
 require 'rspec/core/shared_context'
+require 'excon'
+require 'json'
 
 module RSpamdLegacy
 	extend RSpec::Core::SharedContext
@@ -65,10 +67,34 @@ module RSpamd
 	end
 end
 
+module HTTPSpamScorer
+	extend RSpec::Core::SharedContext
+
+	let :httpspamscorer do
+		@httpspamscorer
+	end
+
+	let :http do
+		Excon.new('http://localhost:4000', read_timeout: 4)
+	end
+
+	before (:all) do
+		@httpspamscorer = background_process('bin/httpspamscorer').with do |process|
+			process.argument '--foreground'
+			process.argument '--debug'
+
+			process.ready_when_log_includes 'worker=0 ready'
+		end
+		.start
+		.wait_ready
+	end
+end
+
 RSpec.configure do |config|
 	config.include SpawnProcessHelpers
 	config.include RSpamdLegacy, rspamd: :legacy
 	config.include RSpamd, rspamd: :server
+	config.include HTTPSpamScorer, httpspamscorer: :server
 
 	config.alias_example_group_to :feature
 	config.alias_example_to :scenario

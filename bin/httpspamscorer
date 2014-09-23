@@ -4,6 +4,8 @@ require 'excon'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
+require 'httpspamscorer/reconstructed_mail'
+
 Application.new('httpspamscorer', port: 4000) do
 	cli do
 		description 'Spam Soring HTTP server'
@@ -52,9 +54,13 @@ Application.new('httpspamscorer', port: 4000) do
 				end
 
 				on true do
+					msg = JSON.parse(req.body.read)
+
+					mail = ReconstructedMail.from_hash(msg)
+
 					resp = normal.post path: '/check',
 					headers: {
-					}, body: req.body.read
+					}, body: mail.to_s
 
 					write_plain 200, resp.body
 				end

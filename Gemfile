@@ -3,6 +3,7 @@ ruby '1.9.3'
 
 gem 'unicorn-cuba-base', '~> 1.2.2'
 #gem 'unicorn-cuba-base', path: '../unicorn-cuba-base'
+gem 'mail', '~> 2.6.1'
 
 group :development do
 	gem 'excon', '>= 0.39'
