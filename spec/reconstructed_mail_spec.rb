@@ -15,14 +15,17 @@ describe ReconstructedMail do
 		File.open('spec/support/image.png', 'rb'){|io| return io.read}
 	end
 
+	let :headers do
+		spam_attachment.header.to_a.map{|h| [h.name, h.value]}
+	end
+
 	describe '#from_hash' do
 		it 'should create e-mail message object from hash of values' do
-			headers = spam_attachment.header.to_a.map{|h| [h.name, h.value]}
 
 			msg = described_class.from_hash(
+				'message-headers' => headers,
 				'body-plain' => spam.text_part.body.to_s,
 				'body-html' => spam.html_part.body.to_s,
-				'message-headers' => headers,
 				'attachments' => spam_attachment.attachments.map do |att|
 					{
 						'filename' => att.filename,
@@ -58,6 +61,86 @@ describe ReconstructedMail do
 					:body => attachment_body
 				)
 			)
+		end
+
+		it 'should raise error if no headers are provided' do
+			expect {
+				described_class.from_hash(
+					#'message-headers' => headers,
+					'body-plain' => spam.text_part.body.to_s,
+					'body-html' => spam.html_part.body.to_s,
+					'attachments' => spam_attachment.attachments.map do |att|
+						{
+						'filename' => att.filename,
+						'body' => att.body.to_s
+						}
+					end
+				)
+			}.to raise_error ArgumentError, 'no headers provided'
+		end
+
+		it 'should raise error if no text or html body is provided' do
+			expect {
+				described_class.from_hash(
+					'message-headers' => headers,
+					#'body-plain' => spam.text_part.body.to_s,
+					#'body-html' => spam.html_part.body.to_s,
+					'attachments' => spam_attachment.attachments.map do |att|
+						{
+						'filename' => att.filename,
+						'body' => att.body.to_s
+						}
+					end
+				)
+			}.to raise_error ArgumentError, 'no text or html body provided'
+		end
+
+		it 'should accept missing body-plain provided body-html' do
+			expect {
+				described_class.from_hash(
+					'message-headers' => headers,
+					#'body-plain' => spam.text_part.body.to_s,
+					'body-html' => spam.html_part.body.to_s,
+					'attachments' => spam_attachment.attachments.map do |att|
+						{
+							'filename' => att.filename,
+							'body' => att.body.to_s
+						}
+					end
+				)
+			}.to_not raise_error
+		end
+
+		it 'should accept missing body-html provided body-plain' do
+			expect {
+				described_class.from_hash(
+					'message-headers' => headers,
+					'body-plain' => spam.text_part.body.to_s,
+					#'body-html' => spam.html_part.body.to_s,
+					'attachments' => spam_attachment.attachments.map do |att|
+						{
+							'filename' => att.filename,
+							'body' => att.body.to_s
+						}
+					end
+				)
+			}.to_not raise_error
+		end
+
+		it 'should accept no attachments' do
+			expect {
+				described_class.from_hash(
+					'message-headers' => headers,
+					'body-plain' => spam.text_part.body.to_s,
+					'body-html' => spam.html_part.body.to_s,
+					#'attachments' => spam_attachment.attachments.map do |att|
+					#	{
+					#		'filename' => att.filename,
+					#		'body' => att.body.to_s
+					#	}
+					#end
+				)
+			}.to_not raise_error
 		end
 	end
 end
