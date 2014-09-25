@@ -1,18 +1,23 @@
 require_relative '../spec_helper'
 
-feature 'passing parsed JSON e-mail to rspamd', rspamd: :server, httpspamscorer: :server do
-	let :spam do
-		File.read('spec/support/spam1.eml')
-	end
-
+feature 'passing parsed JSON e-mail to rspamd', rspamd: :server, httpspamscorer: :server, with: :spam_examples do
 	scenario 'checking spam score' do
-		resp = http.post path: '/check', body: JSON.dump(
-			{
-				'body-plain' => spam
-			}
+		resp = http.post(
+			path: '/check',
+			body: JSON.dump(
+				{
+					'message-headers' => headers,
+					'body-plain' => spam.text_part.body.to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'})
+				}
+			)
 		)
 
-		expect(JSON.parse(resp.body)).to a_collection_including(
+		expect(resp.status).to eq(200)
+
+		body = resp.body
+		puts body
+
+		expect(JSON.parse(body)).to a_collection_including(
 			'default' => a_collection_including(
 				'is_spam' => false,
 				'is_skipped' => false,

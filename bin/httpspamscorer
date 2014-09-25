@@ -35,11 +35,11 @@ Application.new('httpspamscorer', port: 4000) do
 			normal = Excon.new('http://dev.jp-spam:11333', read_timeout: 4) #, :persistent => true)
 
 			self.define do
-				#HTTPSpamScorer.stats.incr_total_requests
-				#on error? do
-					#HTTPSpamScorer.stats.incr_total_errors
-					#run ErrorReporter
-				#end
+				HTTPSpamScorer.stats.incr_total_requests
+				on error? do
+					HTTPSpamScorer.stats.incr_total_errors
+					run DefaultErrorReporter
+				end
 
 				on 'stats' do
 					run StatsReporter
@@ -53,8 +53,8 @@ Application.new('httpspamscorer', port: 4000) do
 					write_plain 200, 'HTTP Spam Scorer'
 				end
 
-				on true do
-					msg = JSON.parse(req.body.read)
+				on 'check' do
+					msg = JSON.parse(req.body.read.to_s)
 
 					mail = ReconstructedMail.from_hash(msg)
 

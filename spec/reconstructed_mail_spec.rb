@@ -2,23 +2,7 @@ require_relative 'spec_helper'
 
 require_relative '../lib/httpspamscorer/reconstructed_mail'
 
-describe ReconstructedMail do
-	let :spam do
-		Mail.read('spec/support/spam1.eml')
-	end
-
-	let :spam_attachment do
-		spam.dup.tap{|spam| spam.add_file('spec/support/image.png')}
-	end
-
-	let :attachment_body do
-		File.open('spec/support/image.png', 'rb'){|io| return io.read}
-	end
-
-	let :headers do
-		spam_attachment.header.to_a.map{|h| [h.name, h.value]}
-	end
-
+describe ReconstructedMail, with: :spam_examples do
 	describe '#from_hash' do
 		it 'should create e-mail message object from hash of values' do
 

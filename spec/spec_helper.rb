@@ -2,6 +2,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rspec'
 require 'httpspamscorer'
+require 'mail'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
@@ -90,11 +91,32 @@ module HTTPSpamScorer
 	end
 end
 
+module SpamExamples
+	extend RSpec::Core::SharedContext
+
+	let :spam do
+		Mail.read('spec/support/spam1.eml')
+	end
+
+	let :spam_attachment do
+		spam.dup.tap{|spam| spam.add_file('spec/support/image.png')}
+	end
+
+	let :attachment_body do
+		File.open('spec/support/image.png', 'rb'){|io| return io.read}
+	end
+
+	let :headers do
+		spam_attachment.header.to_a.map{|h| [h.name, h.value]}
+	end
+end
+
 RSpec.configure do |config|
 	config.include SpawnProcessHelpers
 	config.include RSpamdLegacy, rspamd: :legacy
 	config.include RSpamd, rspamd: :server
 	config.include HTTPSpamScorer, httpspamscorer: :server
+	config.include SpamExamples, with: :spam_examples
 
 	config.alias_example_group_to :feature
 	config.alias_example_to :scenario
