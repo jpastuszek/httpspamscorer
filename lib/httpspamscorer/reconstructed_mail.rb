@@ -1,7 +1,7 @@
 require 'mail'
 
 class ReconstructedMail < Mail::Message
-	def initialize(_headers, _text_body, _html_body, _attachements)
+	def initialize(_headers, _text_body, _html_body, _attachments)
 		super()
 
 		self.headers Hash[_headers]
@@ -14,6 +14,10 @@ class ReconstructedMail < Mail::Message
 			content_type 'text/html; charset=UTF-8'
 			body _html_body
 		end
+
+		_attachments.each do |att|
+			self.attachments[att['filename']] = att['body']
+		end
 	end
 
 	def self.from_hash(msg)
@@ -21,7 +25,7 @@ class ReconstructedMail < Mail::Message
 			msg['message-headers'],
 			msg['body-plain'],
 			msg['body-html'],
-			msg['attachements']
+			msg['attachments']
 		)
 	end
 end
