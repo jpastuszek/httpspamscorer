@@ -31,11 +31,23 @@ describe ReconstructedMail do
 				end
 			)
 
-			msg.header.to_a.map{|h| [h.name, h.value]}
-			.reject{|name, _| name == 'Content-Type'} # boundry will differ
-			.each do |h|
-				expect(headers).to include(h)
-			end
+			expect(
+				msg.header.to_a
+			).to match(
+				headers.map do |name, value|
+					if name == 'Content-Type'
+						an_object_having_attributes(
+							:name => name,
+							:value => a_string_starting_with(value.split(';', 2).first) #  boundry will differ
+						)
+					else
+						an_object_having_attributes(
+							:name => name,
+							:value => value
+						)
+					end
+				end
+			)
 
 			expect(msg.text_part.body.to_s).to eq(spam.text_part.body.to_s)
 			expect(msg.html_part.body.to_s).to eq(spam.html_part.body.to_s)

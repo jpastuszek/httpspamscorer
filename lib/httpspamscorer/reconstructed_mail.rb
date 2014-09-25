@@ -4,7 +4,9 @@ class ReconstructedMail < Mail::Message
 	def initialize(_headers, _text_body, _html_body, _attachments)
 		super()
 
-		self.headers Hash[_headers]
+		_headers.each do |name, value|
+			self.header[name] = value # Note that setting header twice appends it
+		end
 
 		self.text_part = Mail::Part.new do
 			body _text_body
