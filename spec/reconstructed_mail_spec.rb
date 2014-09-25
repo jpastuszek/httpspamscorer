@@ -76,7 +76,7 @@ describe ReconstructedMail do
 						}
 					end
 				)
-			}.to raise_error ArgumentError, 'no headers provided'
+			}.to raise_error ReconstructedMail::ReconstructionError, 'no headers provided'
 		end
 
 		it 'should raise error if no text or html body is provided' do
@@ -92,7 +92,7 @@ describe ReconstructedMail do
 						}
 					end
 				)
-			}.to raise_error ArgumentError, 'no text or html body provided'
+			}.to raise_error ReconstructedMail::ReconstructionError, 'no text or html body provided'
 		end
 
 		it 'should accept missing body-plain provided body-html' do

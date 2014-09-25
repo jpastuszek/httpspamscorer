@@ -1,11 +1,13 @@
 require 'mail'
 
 class ReconstructedMail < Mail::Message
+	ReconstructionError = Class.new ArgumentError
+
 	def initialize(_headers, _text_body, _html_body, _attachments)
 		super()
 
-		_headers or raise(ArgumentError, 'no headers provided')
-		not _text_body and not _html_body and raise(ArgumentError, 'no text or html body provided')
+		_headers or raise(ReconstructionError, 'no headers provided')
+		not _text_body and not _html_body and raise(ReconstructionError, 'no text or html body provided')
 
 		_headers.each do |name, value|
 			self.header[name] = value # Note that setting header twice appends it
