@@ -59,13 +59,43 @@ Application.new('httpspamscorer', port: 4000) do
 					mail = ReconstructedMail.from_hash(msg)
 
 					headers = {}
+
+					received = msg['received'] || mail.header['Received'].map(&:value).select{|val| val =~ /^from /}.first
+					received_for = mail.header['Received'].map(&:value).select{|val| val =~ / for </}.first
+
+					# first try to parse Received that contains for e-mail address so we can verify Rcpt
+					begin
+						helo, ip, hostname, to = * received_for.match(/from (?:\[[^ ]+\]|([^\[][^ ]+)) \((?:[^ ]+ )?\[([^\]]+)\]\)(?: by ([^ ]+))?(?:.* for <([^>]+)>)?/).captures
+
+						headers['Hostname'] = hostname if hostname
+						headers['Helo'] = helo if helo
+						headers['Ip'] = ip if ip
+						headers['Rcpt'] = to if to
+					rescue
+						log.warn "can't parse received_for string: #{received_for}"
+					end if received_for
+
+					# parse first Received header that should contain information of the actual sender SMTP server
+					begin
+						helo, ip, hostname, to = * received.match(/from (?:\[[^ ]+\]|([^\[][^ ]+)) \((?:[^ ]+ )?\[([^\]]+)\]\)(?: by ([^ ]+))?(?:.* for <([^>]+)>)?/).captures
+
+						headers['Hostname'] = hostname if hostname
+						headers['Helo'] = helo if helo
+						headers['Ip'] = ip if ip
+						headers['Rcpt'] = to if to
+					rescue
+						log.warn "can't parse received string: #{received}"
+					end if received
+
+					p headers
+
 					headers['Hostname'] = msg['hostname'] if msg['hostname']
 					headers['User'] = msg['user'] if msg['user']
 					headers['Deliver-To'] = msg['deliver-to'] if msg['deliver-to']
 					headers['Helo'] = msg['helo'] if msg['helo']
 					headers['Ip'] = msg['ip'] if msg['ip']
 					headers['From'] = msg['from'] if msg['from']
-					headers['Rcpt'] = msg['recipient'] if msg['recipient']
+					headers['Rcpt'] = msg['rcpt'] if msg['rcpt']
 
 					resp = normal.post path: '/check', headers: headers, body: mail.to_s
 

@@ -63,6 +63,38 @@ describe ReconstructedMail, with: :spam_examples do
 			}.to raise_error ReconstructedMail::ReconstructionError, 'no headers provided'
 		end
 
+		it 'should raise error if headers are not array' do
+			expect {
+				described_class.from_hash(
+					'message-headers' => '[fdsalhfds]',
+					'body-plain' => spam.text_part.body.to_s,
+					'body-html' => spam.html_part.body.to_s,
+					'attachments' => spam_attachment.attachments.map do |att|
+						{
+							'filename' => att.filename,
+							'body' => att.body.to_s
+						}
+					end
+				)
+			}.to raise_error ReconstructedMail::ReconstructionError, 'headers not array'
+		end
+
+		it 'should raise error if headers are not array of 2 element array' do
+			expect {
+				described_class.from_hash(
+					'message-headers' => ['hello', 'world'],
+					'body-plain' => spam.text_part.body.to_s,
+					'body-html' => spam.html_part.body.to_s,
+					'attachments' => spam_attachment.attachments.map do |att|
+						{
+							'filename' => att.filename,
+							'body' => att.body.to_s
+						}
+					end
+				)
+			}.to raise_error ReconstructedMail::ReconstructionError, 'no header name or value'
+		end
+
 		it 'should raise error if no text or html body is provided' do
 			expect {
 				described_class.from_hash(

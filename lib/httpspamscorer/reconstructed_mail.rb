@@ -7,9 +7,11 @@ class ReconstructedMail < Mail::Message
 		super()
 
 		_headers or raise(ReconstructionError, 'no headers provided')
+		_headers.kind_of? Array or raise(ReconstructionError, 'headers not array')
 		not _text_body and not _html_body and raise(ReconstructionError, 'no text or html body provided')
 
 		_headers.each do |name, value|
+			not name or not value and raise(ReconstructionError, 'no header name or value')
 			self.header[name] = value # Note that setting header twice appends it
 		end
 
