@@ -58,9 +58,16 @@ Application.new('httpspamscorer', port: 4000) do
 
 					mail = ReconstructedMail.from_hash(msg)
 
-					resp = normal.post path: '/check',
-					headers: {
-					}, body: mail.to_s
+					headers = {}
+					headers['Hostname'] = msg['hostname'] if msg['hostname']
+					headers['User'] = msg['user'] if msg['user']
+					headers['Deliver-To'] = msg['deliver-to'] if msg['deliver-to']
+					headers['Helo'] = msg['helo'] if msg['helo']
+					headers['Ip'] = msg['ip'] if msg['ip']
+					headers['From'] = msg['from'] if msg['from']
+					headers['Rcpt'] = msg['recipient'] if msg['recipient']
+
+					resp = normal.post path: '/check', headers: headers, body: mail.to_s
 
 					write_plain 200, resp.body
 				end

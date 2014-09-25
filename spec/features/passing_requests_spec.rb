@@ -15,7 +15,7 @@ feature 'passing parsed JSON e-mail to rspamd', rspamd: :server, httpspamscorer:
 		expect(resp.status).to eq(200)
 
 		body = resp.body
-		puts body
+		#puts body
 
 		expect(JSON.parse(body)).to a_collection_including(
 			'default' => a_collection_including(
@@ -23,10 +23,42 @@ feature 'passing parsed JSON e-mail to rspamd', rspamd: :server, httpspamscorer:
 				'is_skipped' => false,
 				'score' => an_instance_of(Float),
 				'required_score' => an_instance_of(Float),
-				'action' => 'no action',
-				#'HFILTER_HELO_NOT_FQDN' => a_collection_including('score' => an_instance_of(Float)),
-				#'FORGED_SENDER' => a_collection_including('score' => an_instance_of(Float)),
-				#'FORGED_RECIPIENTS' => a_collection_including('score' => an_instance_of(Float))
+				'action' => 'no action'
+			)
+		)
+	end
+
+	scenario 'passing context information to spam scoring' do
+		resp = http.post(
+			path: '/check',
+			body: JSON.dump(
+				{
+					'message-headers' => headers,
+					'body-plain' => spam.text_part.body.to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}),
+					'helo' => 'fdsa', # verify SMTP hello message - HFILTER_HELO_NOT_FQDN
+					'ip' => '192.168.0.1', # verify SMTP hello message - HFILTER_HELO_NOT_FQDN
+					'from' => 'bfalsdh@compuware.com', # verify sender with email - FORGED_SENDER
+					'recipient' => 'dfas@whatclinic.com', # verify recipient with email - FORGED_RECIPIENTS
+					'user' => 'jpastuszek', # logging
+					'deliver-to' => 'dfas'
+				}
+			)
+		)
+
+		expect(resp.status).to eq(200)
+
+		body = resp.body
+
+		expect(JSON.parse(body)).to a_collection_including(
+			'default' => a_collection_including(
+				'is_spam' => false,
+				'is_skipped' => false,
+				'score' => an_instance_of(Float),
+				'required_score' => an_instance_of(Float),
+				'action' => 'add header',
+				'HFILTER_HELO_NOT_FQDN' => a_collection_including('score' => an_instance_of(Float)),
+				'FORGED_SENDER' => a_collection_including('score' => an_instance_of(Float)),
+				'FORGED_RECIPIENTS' => a_collection_including('score' => an_instance_of(Float))
 			)
 		)
 	end
