@@ -110,7 +110,7 @@ feature 'passing parsed JSON e-mail to rspamd', rspamd: :server, httpspamscorer:
 
 		body = resp.body
 
-		#pp JSON.parse(body)
+		#puts JSON.pretty_generate(JSON.parse(body))
 
 		expect(JSON.parse(body)).to a_collection_including(
 			'default' => a_collection_including(
@@ -121,8 +121,7 @@ feature 'passing parsed JSON e-mail to rspamd', rspamd: :server, httpspamscorer:
 				'action' => an_instance_of(String),
 				'R_SPF_ALLOW' => a_collection_including('score' => an_instance_of(Float)),
 				'RWL_MAILSPIKE_GOOD' => a_collection_including('score' => an_instance_of(Float)),
-				#'FORGED_SENDER' => a_collection_including('score' => an_instance_of(Float)),
-				'FORGED_RECIPIENTS' => a_collection_including('score' => an_instance_of(Float))
+				'RCVD_IN_DNSWL_LOW' => a_collection_including('score' => an_instance_of(Float)),
 			)
 		)
 	end

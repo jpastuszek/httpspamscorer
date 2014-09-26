@@ -60,32 +60,30 @@ Application.new('httpspamscorer', port: 4000) do
 
 					headers = {}
 
+					# Use provided or first Received header entry (latest?) that should be most trustworthy to determine context data
 					received = msg['received'] || mail.header['Received'].map(&:value).select{|val| val =~ /^from /}.first
-					received_for = mail.header['Received'].map(&:value).select{|val| val =~ / for </}.first
-
-					# first try to parse Received that contains for e-mail address so we can verify Rcpt
 					begin
-						helo, ip, hostname, to = * received_for.match(/from (?:\[[^ ]+\]|([^\[][^ ]+)) \((?:[^ ]+ )?\[([^\]]+)\]\)(?: by ([^ ]+))?(?:.* for <([^>]+)>)?/).captures
+						helo, ip, hostname, to =  *received.match(/from (?:\[[^ ]+\]|([^\[][^ ]+)) \((?:[^ ]+ )?\[([^\]]+)\]\)(?: by ([^ ]+))?(?:.* for <([^>]+)>)?/).captures
 
 						headers['Hostname'] = hostname if hostname
 						headers['Helo'] = helo if helo
 						headers['Ip'] = ip if ip
 						headers['Rcpt'] = to if to
 					rescue
-						log.warn "can't parse received_for string: #{received_for}"
-					end if received_for
-
-					# parse first Received header that should contain information of the actual sender SMTP server
-					begin
-						helo, ip, hostname, to = * received.match(/from (?:\[[^ ]+\]|([^\[][^ ]+)) \((?:[^ ]+ )?\[([^\]]+)\]\)(?: by ([^ ]+))?(?:.* for <([^>]+)>)?/).captures
-
-						headers['Hostname'] = hostname if hostname
-						headers['Helo'] = helo if helo
-						headers['Ip'] = ip if ip
-						headers['Rcpt'] = to if to
-					rescue
-						log.warn "can't parse received string: #{received}"
+						log.warn "can't parse received_for string: #{received}"
 					end if received
+
+					# If we still didn't get the recipient try looking for it in another Received headers
+					unless headers['Rcpt']
+						received_for = mail.header['Received'].map(&:value).select{|val| val =~ / for </}.first
+						begin
+							to = received_for.match(/for <([^>]+)>/).captures.first
+
+							headers['Rcpt'] = to if to
+						rescue
+							log.warn "can't parse received string: #{received_for}"
+						end if received_for
+					end
 
 					p headers
 
