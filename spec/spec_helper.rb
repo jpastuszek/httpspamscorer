@@ -8,7 +8,7 @@ require 'mail'
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 
-require 'cucumber-spawn-process'
+require 'rspec-background-process'
 
 require 'rspec/core/shared_context'
 require 'excon'

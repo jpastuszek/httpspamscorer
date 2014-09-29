@@ -1,7 +1,7 @@
 PATH
-  remote: ../cucumber-spawn-process
+  remote: ../rspec-background-process
   specs:
-    cucumber-spawn-process (0.1.0)
+    rspec-background-process (0.1.0)
 
 GEM
   remote: http://rubygems.org/
@@ -103,7 +103,6 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.0)
   cucumber
-  cucumber-spawn-process!
   daemon (~> 1.2)
   excon (>= 0.39)
   file-tail (~> 1.0)
@@ -112,5 +111,6 @@ DEPENDENCIES
   micromachine (~> 1.1)
   retries (~> 0.0.5)
   rspec (~> 3.1)
+  rspec-background-process!
   rufus-lru (~> 1.0)
   unicorn-cuba-base (~> 1.2.2)

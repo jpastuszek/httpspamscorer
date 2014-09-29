@@ -12,7 +12,7 @@ group :development do
 	gem 'jeweler', '~> 1.8.4'
 	gem 'bundler', '~> 1.0'
 
-	gem "cucumber-spawn-process", path: "../cucumber-spawn-process"
+	gem "rspec-background-process", path: "../rspec-background-process"
 		gem 'micromachine', '~> 1.1'
 		gem 'rufus-lru', '~> 1.0'
 		gem 'file-tail', '~> 1.0'
