@@ -119,13 +119,13 @@ end
 
 RSpec.configure do |config|
 	config.include RSpamdLegacy, rspamd: :legacy
-	config.include SpawnProcessHelpers, rspamd: :legacy
+	config.include BackgroundProcessHelpers, rspamd: :legacy
 
 	config.include RSpamd, rspamd: :server
-	config.include SpawnProcessHelpers, rspamd: :server
+	config.include BackgroundProcessHelpers, rspamd: :server
 
 	config.include HTTPSpamScorer, httpspamscorer: :server
-	config.include SpawnProcessHelpers, httpspamscorer: :server
+	config.include BackgroundProcessHelpers, httpspamscorer: :server
 
 	config.include SpamExamples, with: :spam_examples
 
