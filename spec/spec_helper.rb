@@ -118,14 +118,17 @@ module SpamExamples
 end
 
 RSpec.configure do |config|
-	config.include SpawnProcessHelpers
 	config.include RSpamdLegacy, rspamd: :legacy
+	config.include SpawnProcessHelpers, rspamd: :legacy
+
 	config.include RSpamd, rspamd: :server
+	config.include SpawnProcessHelpers, rspamd: :server
+
 	config.include HTTPSpamScorer, httpspamscorer: :server
+	config.include SpawnProcessHelpers, httpspamscorer: :server
+
 	config.include SpamExamples, with: :spam_examples
 
 	config.alias_example_group_to :feature
 	config.alias_example_to :scenario
-
-	config.add_formatter FailedInstanceReporter
 end
