@@ -5,6 +5,7 @@ require 'excon'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'httpspamscorer/reconstructed_mail'
+require 'httpspamscorer/error_reporter'
 
 Application.new('httpspamscorer', port: 4000) do
 	cli do
@@ -38,7 +39,7 @@ Application.new('httpspamscorer', port: 4000) do
 				HTTPSpamScorer.stats.incr_total_requests
 				on error? do
 					HTTPSpamScorer.stats.incr_total_errors
-					run DefaultErrorReporter
+					run ErrorReporter
 				end
 
 				on 'stats' do
