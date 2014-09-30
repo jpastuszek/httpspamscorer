@@ -4,47 +4,52 @@ require_relative '../lib/httpspamscorer/reconstructed_mail'
 
 describe ReconstructedMail, with: :spam_examples do
 	describe '#from_hash' do
-		it 'should create e-mail message object from hash of values' do
-
-			msg = described_class.from_hash(
-				'message-headers' => spam_headers,
-				'body-plain' => spam_text_part,
-				'body-html' => spam_html_part,
-				'attachments' => spam_with_attachment.attachments.map do |att|
-					{
-						'filename' => att.filename,
-						'body' => att.body.to_s
-					}
+		context 'when used to crate e-mail message from given map of values' do
+			describe 'created e-mail message' do
+				subject do
+					described_class.from_hash(
+						'message-headers' => spam_headers,
+						'body-plain' => spam_text_part,
+						'body-html' => spam_html_part,
+						'attachments' => spam_with_attachment.attachments.map do |att|
+							{
+								'filename' => att.filename,
+								'body' => att.body.to_s
+							}
+						end
+					)
 				end
-			)
 
-			expect(
-				msg.header.to_a
-			).to match(
-				spam_headers.map do |name, value|
-					if name == 'Content-Type'
+				its('header.to_a') {
+					should match(
+						spam_headers.map do |name, value|
+							if name == 'Content-Type'
+								an_object_having_attributes(
+									:name => name,
+									:value => a_string_starting_with(value.split(';', 2).first) #  boundry will differ
+								)
+							else
+								an_object_having_attributes(
+									:name => name,
+									:value => value
+								)
+							end
+						end
+					)
+				}
+
+				its('text_part.body.to_s') { should eq(spam_text_part) }
+				its('html_part.body.to_s') { should eq(spam_html_part) }
+
+				its('attachments') {
+					should contain_exactly(
 						an_object_having_attributes(
-							:name => name,
-							:value => a_string_starting_with(value.split(';', 2).first) #  boundry will differ
+							:filename => 'image.png',
+							:body => attachment
 						)
-					else
-						an_object_having_attributes(
-							:name => name,
-							:value => value
-						)
-					end
-				end
-			)
-
-			expect(msg.text_part.body.to_s).to eq(spam_text_part)
-			expect(msg.html_part.body.to_s).to eq(spam_html_part)
-
-			expect(msg.attachments).to contain_exactly(
-				an_object_having_attributes(
-					:filename => 'image.png',
-					:body => attachment
-				)
-			)
+					)
+				}
+			end
 		end
 
 		it 'should raise error if no headers are provided' do
