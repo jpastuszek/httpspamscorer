@@ -18,13 +18,11 @@ feature 'passing parsed JSON e-mail to rspamd', rspamd: :server, httpspamscorer:
 		#puts body
 
 		expect(JSON.parse(body)).to a_collection_including(
-			'default' => a_collection_including(
-				'is_spam' => false,
-				'is_skipped' => false,
-				'score' => an_instance_of(Float),
-				'required_score' => an_instance_of(Float),
-				'action' => 'no action'
-			)
+			'is_spam' => false,
+			'is_skipped' => false,
+			'score' => an_instance_of(Float),
+			'required_score' => an_instance_of(Float),
+			'action' => 'no action'
 		)
 	end
 
@@ -50,16 +48,14 @@ feature 'passing parsed JSON e-mail to rspamd', rspamd: :server, httpspamscorer:
 		body = resp.body
 
 		expect(JSON.parse(body)).to a_collection_including(
-			'default' => a_collection_including(
-				'is_spam' => false,
-				'is_skipped' => false,
-				'score' => an_instance_of(Float),
-				'required_score' => an_instance_of(Float),
-				'action' => an_instance_of(String),
-				'HFILTER_HELO_NOT_FQDN' => a_collection_including('score' => an_instance_of(Float)),
-				'FORGED_SENDER' => a_collection_including('score' => an_instance_of(Float)),
-				'FORGED_RECIPIENTS' => a_collection_including('score' => an_instance_of(Float))
-			)
+			'is_spam' => false,
+			'is_skipped' => false,
+			'score' => an_instance_of(Float),
+			'required_score' => an_instance_of(Float),
+			'action' => an_instance_of(String),
+			'HFILTER_HELO_NOT_FQDN' => a_collection_including('score' => an_instance_of(Float)),
+			'FORGED_SENDER' => a_collection_including('score' => an_instance_of(Float)),
+			'FORGED_RECIPIENTS' => a_collection_including('score' => an_instance_of(Float))
 		)
 	end
 
@@ -82,16 +78,14 @@ feature 'passing parsed JSON e-mail to rspamd', rspamd: :server, httpspamscorer:
 		#pp JSON.parse(body)
 
 		expect(JSON.parse(body)).to a_collection_including(
-			'default' => a_collection_including(
-				'is_spam' => false,
-				'is_skipped' => false,
-				'score' => an_instance_of(Float),
-				'required_score' => an_instance_of(Float),
-				'action' => an_instance_of(String),
-				'HFILTER_HELO_NOT_FQDN' => a_collection_including('score' => an_instance_of(Float)),
-				#'FORGED_SENDER' => a_collection_including('score' => an_instance_of(Float)),
-				'FORGED_RECIPIENTS' => a_collection_including('score' => an_instance_of(Float))
-			)
+			'is_spam' => false,
+			'is_skipped' => false,
+			'score' => an_instance_of(Float),
+			'required_score' => an_instance_of(Float),
+			'action' => an_instance_of(String),
+			'HFILTER_HELO_NOT_FQDN' => a_collection_including('score' => an_instance_of(Float)),
+			#'FORGED_SENDER' => a_collection_including('score' => an_instance_of(Float)),
+			'FORGED_RECIPIENTS' => a_collection_including('score' => an_instance_of(Float))
 		)
 	end
 
@@ -113,16 +107,14 @@ feature 'passing parsed JSON e-mail to rspamd', rspamd: :server, httpspamscorer:
 		#puts JSON.pretty_generate(JSON.parse(body))
 
 		expect(JSON.parse(body)).to a_collection_including(
-			'default' => a_collection_including(
-				'is_spam' => false,
-				'is_skipped' => false,
-				'score' => an_instance_of(Float),
-				'required_score' => an_instance_of(Float),
-				'action' => an_instance_of(String),
-				'R_SPF_ALLOW' => a_collection_including('score' => an_instance_of(Float)),
-				'RWL_MAILSPIKE_GOOD' => a_collection_including('score' => an_instance_of(Float)),
-				'RCVD_IN_DNSWL_LOW' => a_collection_including('score' => an_instance_of(Float)),
-			)
+			'is_spam' => false,
+			'is_skipped' => false,
+			'score' => an_instance_of(Float),
+			'required_score' => an_instance_of(Float),
+			'action' => an_instance_of(String),
+			'R_SPF_ALLOW' => a_collection_including('score' => an_instance_of(Float)),
+			'RWL_MAILSPIKE_GOOD' => a_collection_including('score' => an_instance_of(Float)),
+			'RCVD_IN_DNSWL_LOW' => a_collection_including('score' => an_instance_of(Float)),
 		)
 	end
 end

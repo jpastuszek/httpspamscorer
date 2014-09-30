@@ -79,7 +79,7 @@ module HTTPSpamScorer
 		Excon.new('http://localhost:4000', read_timeout: 4)
 	end
 
-	before (:all) do
+	before :all do
 		@httpspamscorer = background_process('bin/httpspamscorer').with do |process|
 			process.argument '--foreground'
 			process.argument '--debug'
@@ -88,6 +88,10 @@ module HTTPSpamScorer
 		end
 		.start
 		.wait_ready
+	end
+
+	after :all do
+		puts "Log file: #{@httpspamscorer.log_file}"
 	end
 end
 

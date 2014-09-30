@@ -69,6 +69,7 @@ Application.new('httpspamscorer', port: 4000) do
 						headers['Helo'] = helo if helo
 						headers['Ip'] = ip if ip
 						headers['Rcpt'] = to if to
+						log.debug "using context headers from: #{received}"
 					rescue
 						log.warn "can't parse received_for string: #{received}"
 					end if received
@@ -80,12 +81,11 @@ Application.new('httpspamscorer', port: 4000) do
 							to = received_for.match(/for <([^>]+)>/).captures.first
 
 							headers['Rcpt'] = to if to
+							log.debug "using Rcpt from: #{received_for}"
 						rescue
 							log.warn "can't parse received string: #{received_for}"
 						end if received_for
 					end
-
-					p headers
 
 					headers['Hostname'] = msg['hostname'] if msg['hostname']
 					headers['User'] = msg['user'] if msg['user']
@@ -95,9 +95,32 @@ Application.new('httpspamscorer', port: 4000) do
 					headers['From'] = msg['from'] if msg['from']
 					headers['Rcpt'] = msg['rcpt'] if msg['rcpt']
 
-					resp = normal.post path: '/check', headers: headers, body: mail.to_s
+					log.info "checking e-mail with context headers: #{headers}"
 
-					write_plain 200, resp.body
+					resp = normal.post path: '/check', headers: headers, body: mail.to_s
+					msg = JSON.parse(resp.body)
+					if result = msg['default']
+						log.debug{"check results: #{result}"}
+
+						symbols = result.keys.grep /[A-Z]/
+						log.with_meta_context(
+							'message-id' => msg['message-id'],
+							'from' => headers['From'],
+							'rcpt' => headers['Rcpt'],
+							'ip' => headers['Ip'],
+							'score' => result['score'],
+							'required_score' => result['required_score'],
+							'result' => result['is_spam'] ? 'spam' : 'ham',
+							'action' => result['action']
+						) do
+							log.info{"check result: score: #{result['score']}/#{result['required_score']} (#{result['is_spam'] ? 'spam' : 'ham'}), action: #{result['action']}, symbols: #{symbols.map{|sym| "#{sym}(#{result[sym]['score']})"}.join(', ')}"}
+						end
+
+						write_json 200, result
+					else
+						log.error "backend returned error: #{msg}"
+						write_json 500, msg
+					end
 				end
 			end
 		end
