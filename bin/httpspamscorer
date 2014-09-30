@@ -53,73 +53,75 @@ Application.new('httpspamscorer', port: 4000) do
 					write_plain 200, 'HTTP Spam Scorer'
 				end
 
-				on 'check' do
-					msg = JSON.parse(req.body.read.to_s)
+				on post do
+					on 'check' do
+						msg = JSON.parse(req.body.read.to_s)
 
-					mail = ReconstructedMail.from_hash(msg)
+						mail = ReconstructedMail.from_hash(msg)
 
-					headers = {}
+						headers = {}
 
-					# Use provided or first Received header entry (latest?) that should be most trustworthy to determine context data
-					received = msg['received'] || mail.header['Received'].map(&:value).select{|val| val =~ /^from /}.first
-					begin
-						helo, ip, hostname, to =  *received.match(/from (?:\[[^ ]+\]|([^\[][^ ]+)) \((?:[^ ]+ )?\[([^\]]+)\]\)(?: by ([^ ]+))?(?:.* for <([^>]+)>)?/).captures
-
-						headers['Hostname'] = hostname if hostname
-						headers['Helo'] = helo if helo
-						headers['Ip'] = ip if ip
-						headers['Rcpt'] = to if to
-						log.debug "using context headers from: #{received}"
-					rescue
-						log.warn "can't parse received_for string: #{received}"
-					end if received
-
-					# If we still didn't get the recipient try looking for it in another Received headers
-					unless headers['Rcpt']
-						received_for = mail.header['Received'].map(&:value).select{|val| val =~ / for </}.first
+						# Use provided or first Received header entry (latest?) that should be most trustworthy to determine context data
+						received = msg['received'] || mail.header['Received'].map(&:value).select{|val| val =~ /^from /}.first
 						begin
-							to = received_for.match(/for <([^>]+)>/).captures.first
+							helo, ip, hostname, to =  *received.match(/from (?:\[[^ ]+\]|([^\[][^ ]+)) \((?:[^ ]+ )?\[([^\]]+)\]\)(?: by ([^ ]+))?(?:.* for <([^>]+)>)?/).captures
 
+							headers['Hostname'] = hostname if hostname
+							headers['Helo'] = helo if helo
+							headers['Ip'] = ip if ip
 							headers['Rcpt'] = to if to
-							log.debug "using Rcpt from: #{received_for}"
+							log.debug "using context headers from: #{received}"
 						rescue
-							log.warn "can't parse received string: #{received_for}"
-						end if received_for
-					end
+							log.warn "can't parse received_for string: #{received}"
+						end if received
 
-					headers['Hostname'] = msg['hostname'] if msg['hostname']
-					headers['User'] = msg['user'] if msg['user']
-					headers['Deliver-To'] = msg['deliver-to'] if msg['deliver-to']
-					headers['Helo'] = msg['helo'] if msg['helo']
-					headers['Ip'] = msg['ip'] if msg['ip']
-					headers['From'] = msg['from'] if msg['from']
-					headers['Rcpt'] = msg['rcpt'] if msg['rcpt']
+						# If we still didn't get the recipient try looking for it in another Received headers
+						unless headers['Rcpt']
+							received_for = mail.header['Received'].map(&:value).select{|val| val =~ / for </}.first
+							begin
+								to = received_for.match(/for <([^>]+)>/).captures.first
 
-					log.info "checking e-mail with context headers: #{headers}"
-
-					resp = normal.post path: '/check', headers: headers, body: mail.to_s
-					msg = JSON.parse(resp.body)
-					if result = msg['default']
-						log.debug{"check results: #{result}"}
-
-						symbols = result.keys.grep /[A-Z]/
-						log.with_meta_context(
-							'message-id' => msg['message-id'],
-							'from' => headers['From'],
-							'rcpt' => headers['Rcpt'],
-							'ip' => headers['Ip'],
-							'score' => result['score'],
-							'required_score' => result['required_score'],
-							'result' => result['is_spam'] ? 'spam' : 'ham',
-							'action' => result['action']
-						) do
-							log.info{"check result: score: #{result['score']}/#{result['required_score']} (#{result['is_spam'] ? 'spam' : 'ham'}), action: #{result['action']}, symbols: #{symbols.map{|sym| "#{sym}(#{result[sym]['score']})"}.join(', ')}"}
+								headers['Rcpt'] = to if to
+								log.debug "using Rcpt from: #{received_for}"
+							rescue
+								log.warn "can't parse received string: #{received_for}"
+							end if received_for
 						end
 
-						write_json 200, result
-					else
-						log.error "backend returned error: #{msg}"
-						write_json 500, msg
+						headers['Hostname'] = msg['hostname'] if msg['hostname']
+						headers['User'] = msg['user'] if msg['user']
+						headers['Deliver-To'] = msg['deliver-to'] if msg['deliver-to']
+						headers['Helo'] = msg['helo'] if msg['helo']
+						headers['Ip'] = msg['ip'] if msg['ip']
+						headers['From'] = msg['from'] if msg['from']
+						headers['Rcpt'] = msg['rcpt'] if msg['rcpt']
+
+						log.info "checking e-mail with context headers: #{headers}"
+
+						resp = normal.post path: '/check', headers: headers, body: mail.to_s
+						msg = JSON.parse(resp.body)
+						if result = msg['default']
+							log.debug{"check results: #{result}"}
+
+							symbols = result.keys.grep /[A-Z]/
+							log.with_meta_context(
+								'message-id' => msg['message-id'],
+								'from' => headers['From'],
+								'rcpt' => headers['Rcpt'],
+								'ip' => headers['Ip'],
+								'score' => result['score'],
+								'required_score' => result['required_score'],
+								'result' => result['is_spam'] ? 'spam' : 'ham',
+								'action' => result['action']
+							) do
+								log.info{"check result: score: #{result['score']}/#{result['required_score']} (#{result['is_spam'] ? 'spam' : 'ham'}), action: #{result['action']}, symbols: #{symbols.map{|sym| "#{sym}(#{result[sym]['score']})"}.join(', ')}"}
+							end
+
+							write_json 200, result
+						else
+							log.error "backend returned error: #{msg}"
+							write_json 500, msg
+						end
 					end
 				end
 			end

@@ -2,11 +2,7 @@ require_relative 'spec_helper'
 
 require 'socket'
 
-describe 'rspamd HTTP client protocol', rspamd: :server do
-	let :spam do
-		File.read('spec/support/spam1.eml')
-	end
-
+describe 'rspamd HTTP client protocol', with: :spam_examples, rspamd: :server do
 	let :normal do
 		Excon.new('http://localhost:11333', read_timeout: 4)
 	end
@@ -27,18 +23,19 @@ describe 'rspamd HTTP client protocol', rspamd: :server do
 			# Rcpt: dfa@fas.com
 			# Helo: fdas
 
-			resp = normal.post path: '/check',
-			headers: {
-				'Hostname' => 'fdsa', # SMTP hostname - HFILTER_HELO_NOT_FQDN
-				'User' => 'fdas@efa.com', # for logging
-				'Deliver-To' => 'fads',
-				'Helo' => 'fdsa', # verify SMTP hello message
-				'Ip' => '192.168.0.1', # verify IP with SPF - R_SPF_SOFTFAIL and backlists (Spamhouse etc.)
-				'From' => 'bfalsdh@compuware.com', # verify sender with email - FORGED_SENDER
-				'Rcpt' => 'dfas@whatclinic.com' # verify recipient with email - FORGED_RECIPIENTS
-			}, body: spam
-
-			#pp JSON.parse(resp.body)
+			resp = normal.post(
+				path: '/check',
+				headers: {
+					'Hostname' => 'fdsa', # SMTP hostname - HFILTER_HELO_NOT_FQDN
+					'User' => 'fdas@efa.com', # for logging
+					'Deliver-To' => 'fads',
+					'Helo' => 'fdsa', # verify SMTP hello message
+					'Ip' => '192.168.0.1', # verify IP with SPF - R_SPF_SOFTFAIL and backlists (Spamhouse etc.)
+					'From' => 'bfalsdh@compuware.com', # verify sender with email - FORGED_SENDER
+					'Rcpt' => 'dfas@whatclinic.com' # verify recipient with email - FORGED_RECIPIENTS
+				},
+				body: spam.to_s
+			)
 
 			expect(JSON.parse(resp.body)).to a_collection_including(
 				'default' => a_collection_including(
@@ -46,14 +43,12 @@ describe 'rspamd HTTP client protocol', rspamd: :server do
 					'is_skipped' => false,
 					'score' => an_instance_of(Float),
 					'required_score' => an_instance_of(Float),
-					'action' => 'no action',
+					'action' => an_instance_of(String),
 					'HFILTER_HELO_NOT_FQDN' => a_collection_including('score' => an_instance_of(Float)),
 					'FORGED_SENDER' => a_collection_including('score' => an_instance_of(Float)),
 					'FORGED_RECIPIENTS' => a_collection_including('score' => an_instance_of(Float))
 				)
 			)
-
-			#puts rspamd.log_file.to_s
 		end
 	end
 
@@ -76,12 +71,13 @@ describe 'rspamd HTTP client protocol', rspamd: :server do
 			# POST /learnspam HTTP/1.0
 			# Content-Length: 414
 
-			resp = control.post path: '/learnspam', body: spam
+			resp = control.post path: '/learnspam', body: spam.to_s
+
 			expect(resp.status).to eq 200
 			expect(JSON.parse(resp.body)).to eq({'success' => true})
 
 			# should be spam by bayes
-			resp = normal.post path: '/check', body: spam
+			resp = normal.post path: '/check', body: spam.to_s
 
 			expect(JSON.parse(resp.body)).to a_collection_including(
 				'default' => a_collection_including(
@@ -100,12 +96,12 @@ describe 'rspamd HTTP client protocol', rspamd: :server do
 			# POST /learnham HTTP/1.0
 			# Content-Length: 414
 
-			resp = control.post path: '/learnham', body: spam
+			resp = control.post path: '/learnham', body: spam.to_s
 			expect(resp.status).to eq 200
 			expect(JSON.parse(resp.body)).to eq({'success' => true})
 
 			# should be spam by bayes
-			resp = normal.post path: '/check', body: spam
+			resp = normal.post path: '/check', body: spam.to_s
 
 			expect(JSON.parse(resp.body)).not_to a_collection_including(
 				'default' => a_collection_including(

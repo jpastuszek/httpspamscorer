@@ -1,0 +1,135 @@
+Delivered-To: jpastuszek@whatclinic.com
+Received: by 10.220.190.3 with SMTP id dg3csp214314vcb;
+        Thu, 18 Sep 2014 04:23:58 -0700 (PDT)
+X-Received: by 10.229.48.135 with SMTP id r7mr7081431qcf.9.1411039437579;
+        Thu, 18 Sep 2014 04:23:57 -0700 (PDT)
+Return-Path: <noreply-d4128843@plus.google.com>
+Received: from mail-qa0-x245.google.com (mail-qa0-x245.google.com [2607:f8b0:400d:c00::245])
+        by mx.google.com with ESMTPS id t6si25606321qat.30.2014.09.18.04.23.57
+        for <jpastuszek@whatclinic.com>
+        (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+        Thu, 18 Sep 2014 04:23:57 -0700 (PDT)
+Received-SPF: pass (google.com: domain of noreply-d4128843@plus.google.com designates 2607:f8b0:400d:c00::245 as permitted sender) client-ip=2607:f8b0:400d:c00::245;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of noreply-d4128843@plus.google.com designates 2607:f8b0:400d:c00::245 as permitted sender) smtp.mail=noreply-d4128843@plus.google.com;
+       dkim=pass header.i=@plus.google.com;
+       dmarc=pass (p=REJECT dis=NONE) header.from=plus.google.com
+Received: by mail-qa0-f69.google.com with SMTP id f12so1076914qad.4
+        for <jpastuszek@whatclinic.com>; Thu, 18 Sep 2014 04:23:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=plus.google.com; s=20120806;
+        h=mime-version:reply-to:list-unsubscribe:precedence:date:message-id
+         :subject:from:to:content-type;
+        bh=SBZULY8744C4nI4wLQ0bm9KRTh8pEab49GT08t3aMGQ=;
+        b=QlCBJQVtORYREXT+NE4ECoAzUg5qpDmY/ldASEMk82xR0v2vKXE7t7H80u9aTLreRt
+         JLxnGlc1auyWdjwf/NSDSFfpPoCNEi6IG35tXFkSMbh+kTG3kofHyUfjXoTqBlB5Mq7H
+         WRpxAwztcQeC9pdTyOOK5XKUl52FGHnBYxR62udCrG+dbguJIvGyIKxettizRH2p3Zsa
+         0D1FKunnA/esUKBnnItES8JhO+EHn3IGmd8xMDbrHRUw50Uyjglmi3DzXbBZs2+WFB3l
+         HTyGXb6BGgUVQWPCqz3OgHwTlnYf9eqNAXi9fJ2owFl3NGKKgAEEwWx5sby8LAmeYxbN
+         DdTw==
+MIME-Version: 1.0
+X-Received: by 10.52.30.104 with SMTP id r8mr3134259vdh.7.1411039437410; Thu,
+ 18 Sep 2014 04:23:57 -0700 (PDT)
+X-Notifications: XEAAAAKmRNjlt_3_34A1c0C98n44
+X-Notification-ID: u:9151ad72e6000000
+X-Notification-Category: ENGAGE
+X-Notification-Type: ENGAGE_CLOSE_TIES
+X-All-Senders-In-Circles: 1
+Reply-To: "Google+" <noreply-d4128843@plus.google.com>
+X-UB: 37
+List-Unsubscribe: <https://plus.google.com/_/notifications/emlink?emr=16968118024662797234&emid=CIjfq8PT6sACFVX_jAodpmMAxg&path=%2Fsettings%2Funsubscribe%3Fueat%3DAJ7SsMl61lbJxhi4OPrXuBa12Olv3j9J69dazNS4Od92cl9MW5UEBAJKd9b8Qg6_XyNCx5KZmrX0IyTzYJ3FIQsf1WyPCwGsz0wJyBCmSppTnnaP89_te61E-ca7VxQcvfgNOP--qlPkOUlH83xtLtjCbKWw2KdIvN51e-Nf7_EbfvNDpjMG_O55uZ4lc8x7QcgEd8tKX9fK&dt=1411039437400&ub=37>
+Precedence: bulk
+Date: Thu, 18 Sep 2014 04:23:57 -0700 (PDT)
+Message-ID: <5snQuvxrjlkPGsFkwEnmMg@notifications.google.com>
+Subject: Jakub, here's what you missed from ThinkGeek on Google+
+From: "Google+" <noreply-d4128843@plus.google.com>
+To: jpastuszek@whatclinic.com
+Content-Type: multipart/alternative; boundary=20cf3079c09a6e521f05035538c2
+
+--20cf3079c09a6e521f05035538c2
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
+
+A post that you might have missed
+
+
+--20cf3079c09a6e521f05035538c2
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<html dir=3D"ltr"><body style=3D"display:block;font-family:Arial;max-width:=
+600px;"><!-- X-Notifications: 1:9151ad72e6000000 --><div style=3D"padding:1=
+0px 0;"><table style=3D"width:100%" cellpadding=3D"0" cellspacing=3D"0"><tr=
+><td><a href=3D"https://plus.google.com/_/notifications/emlink?emr=3D169681=
+18024662797234&emid=3DCIjfq8PT6sACFVX_jAodpmMAxg&path=3D%2Fstream&dt=3D1411=
+039437400&ub=3D37"><img src=3D"https://ssl.gstatic.com/s2/oz/images/notific=
+ations/logo/googleplus-greyscale-100x30-ccedb0dca792635de7635ab648f3336b.pn=
+g" style=3D"border:0" /></a></td><td style=3D"text-align:right"><a href=3D"=
+https://plus.google.com/_/notifications/emlink?emr=3D16968118024662797234&e=
+mid=3DCIjfq8PT6sACFVX_jAodpmMAxg&path=3D%2F111086949937726998175%2Fposts%2F=
+hrEApEUs27M&dt=3D1411039437400&ub=3D37" style=3D"background-color:#d44b38;b=
+order-radius:3px;color:#fff;display:inline-block;font-family: Arial;font-si=
+ze:13px;height:30px;line-height:30px;min-width:54px;padding:1px 20px;text-a=
+lign:center;text-decoration:none;white-space:nowrap;">View post</a></td></t=
+r></table></div><div style=3D"background-color:#4285f4;color:white;font:20p=
+x arial, normal;padding:23px 20px">A post that you might have missed</div><=
+div style=3D"background-color: #f5f5f5;margin-bottom: 15px;padding: 20px 30=
+px 20px 30px"><div style=3D"max-width:520px;"><div style=3D"background-colo=
+r:white;border:1px solid #dadada;border-bottom-width:2px;border-top:none;-m=
+oz-border-radius:3px;-webkit-border-radius:3px;"><div style=3D"padding:14px=
+"><table style=3D"width:100%" cellpadding=3D"0" cellspacing=3D"0"><tr><td s=
+tyle=3D"width:46px"><a href=3D"https://plus.google.com/_/notifications/emli=
+nk?emr=3D16968118024662797234&emid=3DCIjfq8PT6sACFVX_jAodpmMAxg&path=3D%2F1=
+11086949937726998175&dt=3D1411039437400&ub=3D37"><img width=3D"46" height=
+=3D"46" style=3D"border:0;border-radius:50%;-webkit-border-radius:50%;-moz-=
+border-radius:50%;" src=3D"https://lh5.googleusercontent.com/-ht6rjSnGRzI/A=
+AAAAAAAAAI/AAAAAAABEIk/MOxUHQNu-3s/s75-c-k-a-no/photo.jpg" /></a></td><td s=
+tyle=3D"padding-left:14px"><div style=3D"font:14px arial;font-weight:bold;c=
+olor:#262626"><a href=3D"https://plus.google.com/_/notifications/emlink?emr=
+=3D16968118024662797234&emid=3DCIjfq8PT6sACFVX_jAodpmMAxg&path=3D%2F1110869=
+49937726998175&dt=3D1411039437400&ub=3D37" style=3D"color: #262626;font: 16=
+px arial, normal;text-decoration: none;">ThinkGeek</a></div><div style=3D"f=
+ont:11px arial, normal;color:#999999;margin-top:3px">Shared publicly</div><=
+/td></tr></table></div><div style=3D"font-size:13px; color:#404040;margin:0=
+ 14px">I am (crocheted) Groot! Tiny Groot crochet pattern: http://j.mp/1o1K=
+q0L by TwinkieChan</div><div style=3D"margin-top:14px;background:#eee"><a h=
+ref=3D"https://plus.google.com/_/notifications/emlink?emr=3D169681180246627=
+97234&amp;emid=3DCIjfq8PT6sACFVX_jAodpmMAxg&amp;path=3D%2F11108694993772699=
+8175%2Fposts%2FhrEApEUs27M&amp;dt=3D1411039437400&amp;ub=3D37"><img src=3D"=
+https://lh4.googleusercontent.com/--6njiLgwsYI/VBjwTFbPQhI/AAAAAAABcoA/h58m=
+qemQuGk/w506-h750/Grootfinished7-682x1024.jpg" style=3D"max-width:100%;marg=
+in-left:auto;margin-right:auto;display:block;border:0;" alt=3D"image not di=
+splayed"></a></div><br/><div style=3D"padding:14px"><table style=3D"width:1=
+00%" cellpadding=3D"0" cellspacing=3D"0"><tr><td><div style=3D"padding-righ=
+t:20px;display:inline-block;font-size:16px"><a href=3D"https://plus.google.=
+com/_/notifications/emlink?emr=3D16968118024662797234&amp;emid=3DCIjfq8PT6s=
+ACFVX_jAodpmMAxg&amp;path=3D%2F111086949937726998175%2Fposts%2FhrEApEUs27M&=
+amp;dt=3D1411039437400&amp;ub=3D37" style=3D"color:inherit;text-decoration:=
+none"><img style=3D"vertical-align:top;opacity:0.7;border:0;padding-right:4=
+px" src=3D"https://ssl.gstatic.com/s2/oz/images/notifications/button_pluson=
+e_16-8bef4d86953abb940e4edfadb763ffbc.png" />1465</a></div><div style=3D"pa=
+dding-right:20px;display:inline-block;font-size:16px"><a href=3D"https://pl=
+us.google.com/_/notifications/emlink?emr=3D16968118024662797234&amp;emid=3D=
+CIjfq8PT6sACFVX_jAodpmMAxg&amp;path=3D%2F111086949937726998175%2Fposts%2Fhr=
+EApEUs27M&amp;dt=3D1411039437400&amp;ub=3D37" style=3D"color:inherit;text-d=
+ecoration:none"><img style=3D"vertical-align:top;opacity:0.7;border:0;paddi=
+ng-right:4px" src=3D"https://ssl.gstatic.com/s2/oz/images/notifications/but=
+ton_reshare_16-c93b981a0b2a0ba6f69bc5d351d4f233.png" />252</a></div><div st=
+yle=3D"padding-right:20px;display:inline-block;font-size:16px"><a href=3D"h=
+ttps://plus.google.com/_/notifications/emlink?emr=3D16968118024662797234&am=
+p;emid=3DCIjfq8PT6sACFVX_jAodpmMAxg&amp;path=3D%2F111086949937726998175%2Fp=
+osts%2FhrEApEUs27M&amp;dt=3D1411039437400&amp;ub=3D37" style=3D"color:inher=
+it;text-decoration:none"><img style=3D"vertical-align:top;opacity:0.7;borde=
+r:0;padding-right:4px" src=3D"https://ssl.gstatic.com/s2/oz/images/notifica=
+tions/button_comment_16-5dc1a6a009d5d04c130288c0e390a19a.png" />60</a></div=
+></td></tr></table></div></div></div></div><div style=3D"font-size: 10px;co=
+lor: gray;margin-bottom: 10px"><div>This notification was sent to jpastusze=
+k@whatclinic.com; Don't want occasional updates about Google+ activity and =
+friend suggestions? <a href=3D"https://plus.google.com/_/notifications/emli=
+nk?emr=3D16968118024662797234&emid=3DCIjfq8PT6sACFVX_jAodpmMAxg&path=3D%2Fs=
+ettings%2Funsubscribe%3Fueat%3DAJ7SsMl61lbJxhi4OPrXuBa12Olv3j9J69dazNS4Od92=
+cl9MW5UEBAJKd9b8Qg6_XyNCx5KZmrX0IyTzYJ3FIQsf1WyPCwGsz0wJyBCmSppTnnaP89_te61=
+E-ca7VxQcvfgNOP--qlPkOUlH83xtLtjCbKWw2KdIvN51e-Nf7_EbfvNDpjMG_O55uZ4lc8x7Qc=
+gEd8tKX9fK&dt=3D1411039437400&ub=3D37" style=3D"color:#3366CC;text-decorati=
+on:none">Unsubscribe</a> from these emails.</div><div>Google Inc., 1600 Amp=
+hitheatre Pkwy, Mountain View, CA 94043 USA</div></div></body></html>
+--20cf3079c09a6e521f05035538c2--

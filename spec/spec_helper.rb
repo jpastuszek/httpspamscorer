@@ -99,26 +99,48 @@ module SpamExamples
 	extend RSpec::Core::SharedContext
 
 	let :spam do
-		Mail.read('spec/support/spam1.eml')
+		Mail.read('spec/support/spam.eml')
 	end
 
-	let :spam_attachment do
+	let :spam_headers do
+		spam.header.to_a.map{|h| [h.name, h.value]}
+	end
+
+	let :spam_text_part do
+		spam.text_part.body.to_s
+	end
+
+	let :spam_html_part do
+		spam.html_part.body.to_s
+	end
+
+	let :spam_with_attachment do
 		spam.dup.tap{|spam| spam.add_file('spec/support/image.png')}
 	end
 
-	let :attachment_body do
+	let :attachment do
 		File.open('spec/support/image.png', 'rb'){|io| return io.read}
 	end
 
-	let :headers do
-		spam_attachment.header.to_a.map{|h| [h.name, h.value]}
+	let :ham do
+		Mail.read('spec/support/ham.eml')
 	end
 
-	let :gmail_headers do
-		JSON.parse(
-			'[["X-Envelope-From", "<jpastuszek@whatclinic.com>"], ["Received", "from mail-we0-f182.google.com (mail-we0-f182.google.com [74.125.82.182]) by mxa.mailgun.org with ESMTP id 5424368c.6947b70-in3; Thu, 25 Sep 2014 15:36:44 -0000 (UTC)"], ["Received", "by mail-we0-f182.google.com with SMTP id u57so6262384wes.13 for <test@sandboxaa5c302b487f44fe90ee9479494fbb1c.mailgun.org>; Thu, 25 Sep 2014 08:36:43 -0700 (PDT)"], ["X-Google-Dkim-Signature", "v=1; a=rsa-sha256; c=relaxed/relaxed; d=1e100.net; s=20130820; h=x-gm-message-state:from:content-type:subject:message-id:date:to :mime-version; bh=sIAKL3nNcLXNyQZPWUjtOQcrbKAb4tSS9xC72m/8Rcw=; b=ZdmMyBeE7FSFGsXLAUKLXgRMMVQmdfBjjkXtqvhJ3ZKArLn+oqnF3na4X5+L5EQk57 RNEehqFSXUY8Yd9TZxyf0GX2zd804slL9+NWzc8/uvS0RZQ1aq2FODFvQpYqT6EWsztM kyVYVBlFGZ977PmxubxaogpImBmUwbQNHXGpDJnYK/aq/zst4BCJNb0TcX7Muf+YaI6B eh2XzrNvNmxqETe9Xa30vETQtXxK8CIR9y+F3avqhNKpGv0vcllq54IQlKkaeUxb1vTI Rs8lr7BZVktbz8zyrtiKdxBWuStL8AunKaO0PQq+KkdEAOdmYajO1WNqylcTK1kvWOp8 ts2w=="], ["X-Gm-Message-State", "ALoCoQkMV/zSEPFSdnSfl/dLvfebYhkQhcgLf7ouBZ/kIfvvruP136RasOyOQ5T7uNo/C3ZH+TjS"], ["X-Received", "by 10.194.78.101 with SMTP id a5mr4184276wjx.118.1411659403469; Thu, 25 Sep 2014 08:36:43 -0700 (PDT)"], ["Return-Path", "<jpastuszek@whatclinic.com>"], ["Received", "from [192.168.1.115] ([86.43.88.8]) by mx.google.com with ESMTPSA id t9sm3066150wjf.41.2014.09.25.08.36.42 for <test@sandboxaa5c302b487f44fe90ee9479494fbb1c.mailgun.org> (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128); Thu, 25 Sep 2014 08:36:42 -0700 (PDT)"], ["From", "\"WhatClinic.com\" <jpastuszek@whatclinic.com>"], ["Content-Type", "multipart/signed; boundary=\"Apple-Mail=_AFFC30E8-7E87-4DA5-A532-A8CBC63AEAAE\"; protocol=\"application/pkcs7-signature\"; micalg=\"sha1\""], ["Subject", "test"], ["Message-Id", "<2B1F8E39-4336-4FB0-A54F-4AFB19DF0F81@whatclinic.com>"], ["Date", "Thu, 25 Sep 2014 16:36:40 +0100"], ["To", "test@sandboxaa5c302b487f44fe90ee9479494fbb1c.mailgun.org"], ["Mime-Version", "1.0 (Mac OS X Mail 7.3 \\(1878.6\\))"], ["X-Mailer", "Apple Mail (2.1878.6)"], ["X-Mailgun-Incoming", "Yes"]]',
-		)
+	let :ham_headers do
+		ham.header.to_a.map{|header| [header.name, header.value]}
 	end
+
+	let :ham_text_part do
+		ham.text_part.body.to_s
+	end
+
+	let :ham_html_part do
+		ham.html_part.body.to_s
+	end
+end
+
+def pj(json)
+	puts JSON.pretty_generate(JSON.parse(json))
 end
 
 RSpec.configure do |config|

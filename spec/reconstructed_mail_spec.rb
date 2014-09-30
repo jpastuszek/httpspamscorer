@@ -7,10 +7,10 @@ describe ReconstructedMail, with: :spam_examples do
 		it 'should create e-mail message object from hash of values' do
 
 			msg = described_class.from_hash(
-				'message-headers' => headers,
-				'body-plain' => spam.text_part.body.to_s,
-				'body-html' => spam.html_part.body.to_s,
-				'attachments' => spam_attachment.attachments.map do |att|
+				'message-headers' => spam_headers,
+				'body-plain' => spam_text_part,
+				'body-html' => spam_html_part,
+				'attachments' => spam_with_attachment.attachments.map do |att|
 					{
 						'filename' => att.filename,
 						'body' => att.body.to_s
@@ -21,7 +21,7 @@ describe ReconstructedMail, with: :spam_examples do
 			expect(
 				msg.header.to_a
 			).to match(
-				headers.map do |name, value|
+				spam_headers.map do |name, value|
 					if name == 'Content-Type'
 						an_object_having_attributes(
 							:name => name,
@@ -36,13 +36,13 @@ describe ReconstructedMail, with: :spam_examples do
 				end
 			)
 
-			expect(msg.text_part.body.to_s).to eq(spam.text_part.body.to_s)
-			expect(msg.html_part.body.to_s).to eq(spam.html_part.body.to_s)
+			expect(msg.text_part.body.to_s).to eq(spam_text_part)
+			expect(msg.html_part.body.to_s).to eq(spam_html_part)
 
 			expect(msg.attachments).to contain_exactly(
 				an_object_having_attributes(
 					:filename => 'image.png',
-					:body => attachment_body
+					:body => attachment
 				)
 			)
 		end
@@ -50,10 +50,10 @@ describe ReconstructedMail, with: :spam_examples do
 		it 'should raise error if no headers are provided' do
 			expect {
 				described_class.from_hash(
-					#'message-headers' => headers,
-					'body-plain' => spam.text_part.body.to_s,
-					'body-html' => spam.html_part.body.to_s,
-					'attachments' => spam_attachment.attachments.map do |att|
+					#'message-headers' => spam_headers,
+					'body-plain' => spam_text_part,
+					'body-html' => spam_html_part,
+					'attachments' => spam_with_attachment.attachments.map do |att|
 						{
 						'filename' => att.filename,
 						'body' => att.body.to_s
@@ -67,9 +67,9 @@ describe ReconstructedMail, with: :spam_examples do
 			expect {
 				described_class.from_hash(
 					'message-headers' => '[fdsalhfds]',
-					'body-plain' => spam.text_part.body.to_s,
-					'body-html' => spam.html_part.body.to_s,
-					'attachments' => spam_attachment.attachments.map do |att|
+					'body-plain' => spam_text_part,
+					'body-html' => spam_html_part,
+					'attachments' => spam_with_attachment.attachments.map do |att|
 						{
 							'filename' => att.filename,
 							'body' => att.body.to_s
@@ -83,9 +83,9 @@ describe ReconstructedMail, with: :spam_examples do
 			expect {
 				described_class.from_hash(
 					'message-headers' => ['hello', 'world'],
-					'body-plain' => spam.text_part.body.to_s,
-					'body-html' => spam.html_part.body.to_s,
-					'attachments' => spam_attachment.attachments.map do |att|
+					'body-plain' => spam_text_part,
+					'body-html' => spam_html_part,
+					'attachments' => spam_with_attachment.attachments.map do |att|
 						{
 							'filename' => att.filename,
 							'body' => att.body.to_s
@@ -98,10 +98,10 @@ describe ReconstructedMail, with: :spam_examples do
 		it 'should raise error if no text or html body is provided' do
 			expect {
 				described_class.from_hash(
-					'message-headers' => headers,
-					#'body-plain' => spam.text_part.body.to_s,
-					#'body-html' => spam.html_part.body.to_s,
-					'attachments' => spam_attachment.attachments.map do |att|
+					'message-headers' => spam_headers,
+					#'body-plain' => spam_text_part,
+					#'body-html' => spam_html_part,
+					'attachments' => spam_with_attachment.attachments.map do |att|
 						{
 						'filename' => att.filename,
 						'body' => att.body.to_s
@@ -114,10 +114,10 @@ describe ReconstructedMail, with: :spam_examples do
 		it 'should accept missing body-plain provided body-html' do
 			expect {
 				described_class.from_hash(
-					'message-headers' => headers,
-					#'body-plain' => spam.text_part.body.to_s,
-					'body-html' => spam.html_part.body.to_s,
-					'attachments' => spam_attachment.attachments.map do |att|
+					'message-headers' => spam_headers,
+					#'body-plain' => spam_text_part,
+					'body-html' => spam_html_part,
+					'attachments' => spam_with_attachment.attachments.map do |att|
 						{
 							'filename' => att.filename,
 							'body' => att.body.to_s
@@ -130,10 +130,10 @@ describe ReconstructedMail, with: :spam_examples do
 		it 'should accept missing body-html provided body-plain' do
 			expect {
 				described_class.from_hash(
-					'message-headers' => headers,
-					'body-plain' => spam.text_part.body.to_s,
-					#'body-html' => spam.html_part.body.to_s,
-					'attachments' => spam_attachment.attachments.map do |att|
+					'message-headers' => spam_headers,
+					'body-plain' => spam_text_part,
+					#'body-html' => spam_html_part,
+					'attachments' => spam_with_attachment.attachments.map do |att|
 						{
 							'filename' => att.filename,
 							'body' => att.body.to_s
@@ -146,10 +146,10 @@ describe ReconstructedMail, with: :spam_examples do
 		it 'should accept no attachments' do
 			expect {
 				described_class.from_hash(
-					'message-headers' => headers,
-					'body-plain' => spam.text_part.body.to_s,
-					'body-html' => spam.html_part.body.to_s,
-					#'attachments' => spam_attachment.attachments.map do |att|
+					'message-headers' => spam_headers,
+					'body-plain' => spam_text_part,
+					'body-html' => spam_html_part,
+					#'attachments' => spam_with_attachment.attachments.map do |att|
 					#	{
 					#		'filename' => att.filename,
 					#		'body' => att.body.to_s
