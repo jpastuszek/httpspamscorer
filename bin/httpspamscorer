@@ -22,7 +22,10 @@ Application.new('httpspamscorer', port: 4000) do
 			def_stats(
 				:workers,
 				:total_requests,
-				:total_errors
+				:total_errors,
+				:total_emails_checked,
+				:total_spam,
+				:total_ham
 			)
 
 			raindrops_stats = Raindrops::Middleware::Stats.new
@@ -30,7 +33,6 @@ Application.new('httpspamscorer', port: 4000) do
 
 			StatsReporter << HTTPSpamScorer.stats
 			StatsReporter << raindrops_stats
-			#StatsReporter << Plugin::Thumbnailer::Service.stats
 			StatsReporter << Plugin::ResponseHelpers.stats
 
 			normal = Excon.new('http://dev.jp-spam:11333', read_timeout: 4) #, :persistent => true)
@@ -120,6 +122,9 @@ Application.new('httpspamscorer', port: 4000) do
 							end
 
 							write_json 200, result
+
+							HTTPSpamScorer.stats.incr_total_emails_checked
+							result['is_spam'] ? HTTPSpamScorer.stats.incr_total_spam : HTTPSpamScorer.stats.incr_total_ham
 						else
 							log.error "backend returned error: #{msg}"
 							write_json 500, msg

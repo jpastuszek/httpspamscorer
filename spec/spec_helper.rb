@@ -32,9 +32,9 @@ module RSpamdLegacy
 
 			process.ready_when_log_includes 'main: calling sigsuspend'
 			#process.logging_enabled
-		end
-		.start
-		.wait_ready
+		end.instance
+
+		@rspamd.start.wait_ready unless @rspamd.running?
 	end
 end
 
@@ -58,9 +58,9 @@ module RSpamd
 			# get rid of learned stats
 			process.refresh_command 'test -f bayes.spam && rm -f bayes.spam'
 			#process.logging_enabled
-		end
-		.start
-		.wait_ready
+		end.instance
+
+		@rspamd.start.wait_ready unless @rspamd.running?
 	end
 
 	before (:each) do
@@ -86,13 +86,13 @@ module HTTPSpamScorer
 			process.argument '--debug'
 
 			process.ready_when_log_includes 'worker=0 ready'
-		end
-		.start
-		.wait_ready
+		end.instance
+
+		@httpspamscorer.start.wait_ready unless  @httpspamscorer.running?
 	end
 
 	after :all do
-		puts "Log file: #{@httpspamscorer.log_file}"
+		#puts "Log file: #{@httpspamscorer.log_file}"
 	end
 
 	def given_empty_log_file
@@ -178,6 +178,12 @@ module HTTPHelpers
 
 	def then_response_status_should_be(status)
 		expect(@resp).to have_attributes(status: status)
+	end
+
+	def then_response_should_contain_plain_text(matcher = nil)
+		expect(@resp.get_header('Content-Type')).to eq('text/plain')
+		return unless matcher
+		expect(@resp.body).to matcher
 	end
 
 	def then_response_should_contain_json

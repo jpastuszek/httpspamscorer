@@ -155,3 +155,15 @@ feature 'server logging of e-mail checking', httpspamscorer: :server, with: :spa
 	end
 end
 
+feature 'checking API statistics', httpspamscorer: :server do
+	scenario 'retrieving check statistics' do
+		when_i_make_get_request_to '/stats'
+
+		then_response_status_should_be 200
+		then_response_should_contain_plain_text(
+			including('total_emails_checked: ')
+			.and including('total_spam: ')
+			.and including('total_ham: ')
+		)
+	end
+end
