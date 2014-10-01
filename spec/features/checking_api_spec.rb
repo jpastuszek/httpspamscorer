@@ -107,5 +107,26 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 			then_response_should_contain_json
 			then_json_response_should_contain_error_message_including 'no headers provided'
 		end
+
+		scenario 'missing body' do
+			when_i_make_post_request_to '/check', with_json: {
+				'message-headers' => ham_headers
+			}
+
+			then_response_status_should_be 400
+			then_response_should_contain_json
+			then_json_response_should_contain_error_message_including 'no text or html body provided'
+		end
+
+		scenario 'bad message headers' do
+			when_i_make_post_request_to '/check', with_json: {
+				'message-headers' => ['foobar'],
+				'body-plain' => ham_text_part
+			}
+
+			then_response_status_should_be 400
+			then_response_should_contain_json
+			then_json_response_should_contain_error_message_including 'no header name or value'
+		end
 	end
 end
