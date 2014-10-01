@@ -144,7 +144,44 @@ def pj(json)
 	puts JSON.pretty_generate(JSON.parse(json))
 end
 
+module HTTPHelpers
+	def when_i_make_get_request_to(uri)
+		@resp = http.get path: uri
+	end
+
+	def when_i_make_post_request_to(uri, options = {})
+		req = {}
+		req[:path] = uri
+		req[:body] = JSON.dump(options[:with_json]) if options.key? :with_json
+
+		@resp = http.post req
+	end
+
+	def then_response_status_should_be(status)
+		expect(@resp).to have_attributes(status: status)
+	end
+
+	def then_response_should_contain_json
+		expect(@resp.get_header('Content-Type')).to eq('application/json')
+		@json_resp = JSON.parse(@resp.body)
+	end
+
+	def then_json_response_should_contain_error_message
+		expect(@json_resp).to include 'error' => an_instance_of(String)
+	end
+
+	def then_json_response_should_contain_error_message_including(msg)
+		expect(@json_resp).to include 'error' => a_string_including(msg)
+	end
+
+	def then_json_response_should_be(matcher)
+		expect(@json_resp).to matcher
+	end
+end
+
 RSpec.configure do |config|
+	config.include HTTPHelpers
+
 	config.include RSpamdLegacy, rspamd: :legacy
 	config.include BackgroundProcessHelpers, rspamd: :legacy
 
