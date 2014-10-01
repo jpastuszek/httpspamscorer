@@ -13,7 +13,8 @@ class ErrorReporter < Controller
 
 		on error(
 			URI::InvalidURIError,
-			ReconstructedMail::ReconstructionError
+			ReconstructedMail::ReconstructionError,
+			JSON::ParserError
 		) do |error|
 			write_json 400, {error: error}
 		end

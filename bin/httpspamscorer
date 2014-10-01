@@ -80,12 +80,10 @@ Application.new('httpspamscorer', port: 4000) do
 
 				def handle_backend_response(resp)
 					msg = JSON.parse(resp.body)
-					if msg.key? 'error'
-						log.error "backend returned error: #{msg}"
-						write_json 500, msg
-						halt(res.finish)
-					end
+					fail "backend returned error: #{msg['error']}" if msg.key? 'error'
 					msg
+				rescue JSON::ParserError
+					fail "backend returned empty or invalid JSON response: #{resp.body}"
 				end
 
 				on post do

@@ -180,9 +180,8 @@ module HTTPHelpers
 		expect(@resp).to have_attributes(status: status)
 	end
 
-	def then_response_should_contain_plain_text(matcher = nil)
+	def then_response_should_contain_plain_text_with(matcher)
 		expect(@resp.get_header('Content-Type')).to eq('text/plain')
-		return unless matcher
 		expect(@resp.body).to matcher
 	end
 
@@ -191,20 +190,21 @@ module HTTPHelpers
 		@json_resp = JSON.parse(@resp.body)
 	end
 
-	def then_json_response_should_contain_error_message
-		expect(@json_resp).to include 'error' => an_instance_of(String)
-	end
-
-	def then_json_response_should_contain_error_message_including(msg)
-		expect(@json_resp).to include 'error' => a_string_including(msg)
-	end
-
-	def then_json_response_should_be(matcher)
+	def then_response_should_contain_json_with(matcher)
+		then_response_should_contain_json
 		expect(@json_resp).to matcher
 	end
 
-	def then_json_response_should_not_be(matcher)
+	def then_response_should_contain_json_without(matcher)
+		then_response_should_contain_json
 		expect(@json_resp).not_to matcher
+	end
+
+	def then_response_should_contain_json_with_error_message(matcher = be_an_instance_of(String))
+		then_response_should_contain_json
+		then_response_should_contain_json_with a_collection_including(
+			'error' => matcher
+		)
 	end
 end
 

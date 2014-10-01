@@ -9,8 +9,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 			}
 
 			then_response_status_should_be 200
-			then_response_should_contain_json
-			then_json_response_should_be a_collection_including(
+			then_response_should_contain_json_with a_collection_including(
 				'is_spam' => false,
 				'is_skipped' => false,
 				'score' => an_instance_of(Float),
@@ -28,8 +27,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 			}
 
 			then_response_status_should_be 200
-			then_response_should_contain_json
-			then_json_response_should_be a_collection_including(
+			then_response_should_contain_json_with a_collection_including(
 				'is_spam' => false,
 				'is_skipped' => false,
 				'score' => an_instance_of(Float),
@@ -54,8 +52,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 				}
 
 				then_response_status_should_be 200
-				then_response_should_contain_json
-				then_json_response_should_be a_collection_including(
+				then_response_should_contain_json_with a_collection_including(
 					'is_spam' => false,
 					'is_skipped' => false,
 					'score' => an_instance_of(Float),
@@ -75,8 +72,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 				}
 
 				then_response_status_should_be 200
-				then_response_should_contain_json
-				then_json_response_should_be a_collection_including(
+				then_response_should_contain_json_with a_collection_including(
 					'is_spam' => false,
 					'is_skipped' => false,
 					'score' => an_instance_of(Float),
@@ -94,8 +90,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 			when_i_make_get_request_to '/check'
 
 			then_response_status_should_be 404
-			then_response_should_contain_json
-			then_json_response_should_contain_error_message
+			then_response_should_contain_json_with_error_message
 		end
 
 		scenario 'missing message headers' do
@@ -104,8 +99,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 			}
 
 			then_response_status_should_be 400
-			then_response_should_contain_json
-			then_json_response_should_contain_error_message_including 'no headers provided'
+			then_response_should_contain_json_with_error_message 'no headers provided'
 		end
 
 		scenario 'missing body' do
@@ -114,8 +108,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 			}
 
 			then_response_status_should_be 400
-			then_response_should_contain_json
-			then_json_response_should_contain_error_message_including 'no text or html body provided'
+			then_response_should_contain_json_with_error_message 'no text or html body provided'
 		end
 
 		scenario 'bad message headers' do
@@ -125,8 +118,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 			}
 
 			then_response_status_should_be 400
-			then_response_should_contain_json
-			then_json_response_should_contain_error_message_including 'no header name or value'
+			then_response_should_contain_json_with_error_message 'no header name or value'
 		end
 	end
 end
@@ -160,8 +152,8 @@ feature 'checking API statistics', httpspamscorer: :server do
 		when_i_make_get_request_to '/stats'
 
 		then_response_status_should_be 200
-		then_response_should_contain_plain_text(
-			including('total_emails_checked: ')
+		then_response_should_contain_plain_text_with(
+			a_string_including('total_emails_checked: ')
 			.and including('total_spam: ')
 			.and including('total_ham: ')
 		)
