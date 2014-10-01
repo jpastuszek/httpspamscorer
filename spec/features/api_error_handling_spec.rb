@@ -9,7 +9,7 @@ feature 'API error handling with JSON responses', httpspamscorer: :server do
 	end
 
 	scenario 'no JSON post body' do
-		when_i_make_post_request_to '/foobar'
+		when_i_make_JSON_post_request_to '/foobar'
 
 		then_response_status_should_be 400
 		then_response_should_contain_json_with_error_message including('JSON text must at least contain two octets')

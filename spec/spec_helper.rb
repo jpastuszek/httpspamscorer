@@ -56,7 +56,7 @@ module RSpamd
 			process.ready_when_log_includes 'main: calling sigsuspend'
 
 			# get rid of learned stats
-			process.refresh_command 'test -f bayes.spam && rm -f bayes.spam'
+			process.refresh_command 'test -f bayes.*am && rm -f bayes.*am'
 			#process.logging_enabled
 		end.instance
 
@@ -67,6 +67,20 @@ module RSpamd
 		rspamd.refresh
 		rspamd.restart.wait_ready
 	end
+
+	let :normal_client do
+		Excon.new('http://localhost:11333', read_timeout: 4)
+	end
+
+	let :control_client do
+		Excon.new('http://localhost:11334', read_timeout: 4)
+	end
+
+	def self.given_normal_client
+		subject do
+			normal_client
+		end
+	end
 end
 
 module HTTPSpamScorer
@@ -76,8 +90,12 @@ module HTTPSpamScorer
 		@httpspamscorer
 	end
 
-	let :http do
+	let :httpspamscorer_client do
 		Excon.new('http://localhost:4000', read_timeout: 4)
+	end
+
+	subject do
+		httpspamscorer_client
 	end
 
 	before :all do
@@ -164,16 +182,28 @@ module HTTPHelpers
 		puts JSON.pretty_generate(JSON.parse(json))
 	end
 
-	def when_i_make_get_request_to(uri)
-		@resp = http.get path: uri
+	def when_i_make_post_request_to(uri, options = {})
+		req = {}
+		req[:path] = uri
+		req[:headers] = options[:with_headers] if options.key? :with_headers
+		req[:body] = options[:with_body] if options.key? :with_body
+
+		client = options[:with_client] if options.key? :with_client
+		client ||= subject
+
+		@resp = client.post req
 	end
 
-	def when_i_make_post_request_to(uri, options = {})
+	def when_i_make_get_request_to(uri)
+		@resp = subject.get path: uri
+	end
+
+	def when_i_make_JSON_post_request_to(uri, options = {})
 		req = {}
 		req[:path] = uri
 		req[:body] = JSON.dump(options[:with_json]) if options.key? :with_json
 
-		@resp = http.post req
+		@resp = subject.post req
 	end
 
 	def then_response_status_should_be(status)

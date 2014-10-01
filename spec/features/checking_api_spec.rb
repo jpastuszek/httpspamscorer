@@ -3,7 +3,7 @@ require_relative '../spec_helper'
 feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 	context 'passing parsed e-mail for scoring', rspamd: :server do
 		scenario 'checking plain part' do
-			when_i_make_post_request_to '/check', with_json: {
+			when_i_make_JSON_post_request_to '/check', with_json: {
 				'message-headers' => ham_headers,
 				'body-plain' => ham_text_part
 			}
@@ -20,7 +20,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 		end
 
 		scenario 'checking plain and html parts' do
-			when_i_make_post_request_to '/check', with_json: {
+			when_i_make_JSON_post_request_to '/check', with_json: {
 				'message-headers' => ham_headers,
 				'body-plain' => ham_text_part,
 				'body-html' => ham_html_part
@@ -40,7 +40,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 
 		context 'passing additional context information' do
 			scenario 'passing context information to spam scoring with rspamd headers' do
-				when_i_make_post_request_to '/check', with_json: {
+				when_i_make_JSON_post_request_to '/check', with_json: {
 					'message-headers' => ham_headers,
 					'body-plain' => ham_text_part,
 					'helo' => 'fdsa', # verify SMTP hello message - HFILTER_HELO_NOT_FQDN
@@ -65,7 +65,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 			end
 
 			scenario 'passing context information to spam scoring with received' do
-				when_i_make_post_request_to '/check', with_json: {
+				when_i_make_JSON_post_request_to '/check', with_json: {
 					'message-headers' => ham_headers,
 					'body-plain' => ham_text_part,
 					'received' => 'from foobaz ([86.43.88.8]) by mx.google.com with ESMTPSA id t9sm3066150wjf.41.2014.09.25.08.36.42 for <test@sandboxaa5c302b487f44fe90ee9479494fbb1c.mailgun.org> (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128); Thu, 25 Sep 2014 08:36:42 -0700 (PDT)'
@@ -94,7 +94,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 		end
 
 		scenario 'missing message headers' do
-			when_i_make_post_request_to '/check', with_json: {
+			when_i_make_JSON_post_request_to '/check', with_json: {
 				'body-plain' => ham_text_part
 			}
 
@@ -103,7 +103,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 		end
 
 		scenario 'missing body' do
-			when_i_make_post_request_to '/check', with_json: {
+			when_i_make_JSON_post_request_to '/check', with_json: {
 				'message-headers' => ham_headers
 			}
 
@@ -112,7 +112,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 		end
 
 		scenario 'bad message headers' do
-			when_i_make_post_request_to '/check', with_json: {
+			when_i_make_JSON_post_request_to '/check', with_json: {
 				'message-headers' => ['foobar'],
 				'body-plain' => ham_text_part
 			}
@@ -127,7 +127,7 @@ feature 'server logging of e-mail checking', httpspamscorer: :server, with: :spa
 	scenario 'metadata logged for checked e-mail' do
 		given_empty_log_file
 
-		when_i_make_post_request_to '/check', with_json: {
+		when_i_make_JSON_post_request_to '/check', with_json: {
 			'message-headers' => ham_headers,
 			'body-plain' => ham_text_part
 		}

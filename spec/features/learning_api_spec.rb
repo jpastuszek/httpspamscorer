@@ -3,7 +3,7 @@ require_relative '../spec_helper'
 feature 'e-mail learning API', httpspamscorer: :server, with: :spam_examples do
 	context 'passing parsed e-mail for learning', rspamd: :server do
 		def given_spam_is_not_scored_with_symbol(symbol)
-			when_i_make_post_request_to '/check', with_json: {
+			when_i_make_JSON_post_request_to '/check', with_json: {
 				'message-headers' => spam_headers,
 				'body-plain' => spam_text_part
 			}
@@ -11,7 +11,7 @@ feature 'e-mail learning API', httpspamscorer: :server, with: :spam_examples do
 		end
 
 		def then_spam_is_scored_with_symbol(symbol)
-			when_i_make_post_request_to '/check', with_json: {
+			when_i_make_JSON_post_request_to '/check', with_json: {
 				'message-headers' => spam_headers,
 				'body-plain' => spam_text_part
 			}
@@ -21,7 +21,7 @@ feature 'e-mail learning API', httpspamscorer: :server, with: :spam_examples do
 		scenario 'learning spam' do
 			given_spam_is_not_scored_with_symbol 'BAYES_SPAM'
 
-			when_i_make_post_request_to '/learn/spam', with_json: {
+			when_i_make_JSON_post_request_to '/learn/spam', with_json: {
 				'message-headers' => spam_headers,
 				'body-plain' => spam_text_part
 			}
@@ -38,7 +38,7 @@ feature 'e-mail learning API', httpspamscorer: :server, with: :spam_examples do
 			given_spam_is_not_scored_with_symbol 'BAYES_HAM'
 
 			# learn
-			when_i_make_post_request_to '/learn/ham', with_json: {
+			when_i_make_JSON_post_request_to '/learn/ham', with_json: {
 				'message-headers' => spam_headers,
 				'body-plain' => spam_text_part
 			}
