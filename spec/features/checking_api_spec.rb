@@ -130,3 +130,28 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 		end
 	end
 end
+
+feature 'server logging of e-mail checking', httpspamscorer: :server, with: :spam_examples do
+	scenario 'metadata logged for checked e-mail' do
+		given_empty_log_file
+
+		when_i_make_post_request_to '/check', with_json: {
+			'message-headers' => ham_headers,
+			'body-plain' => ham_text_part
+		}
+
+		then_log_file_should_contain_line including 'check result'
+		then_matched_line_should_contain_meta including(
+			'message-id' => ham.message_id,
+			'from' => ham.from,
+			'to' => ham.to,
+			'is_spam' => false,
+			'action' => an_instance_of(String),
+			'ip' => a_string_matching(/(:|.)/),
+			'score' => an_instance_of(Float),
+			'required_score' => an_instance_of(Float),
+			'symbols' => a_collection_including('R_SPF_ALLOW')
+		)
+	end
+end
+

@@ -94,6 +94,25 @@ module HTTPSpamScorer
 	after :all do
 		puts "Log file: #{@httpspamscorer.log_file}"
 	end
+
+	def given_empty_log_file
+		@httpspamscorer.log_file.truncate(0)
+	end
+
+	def then_log_file_should(matcher)
+		@log_data = @httpspamscorer.log_file.read
+		expect(@log_data).to matcher
+	end
+
+	def then_log_file_should_contain_line(matcher)
+		@log_data = @httpspamscorer.log_file.read
+		expect(@log_data).to matcher
+		@matched_line = @log_data.each_line.select{|line| matcher.matches? line}.last
+	end
+
+	def then_matched_line_should_contain_meta(matcher)
+		expect(JSON.parse(@matched_line.match(/\[meta ({.*})\]/).captures.first)).to matcher
+	end
 end
 
 module SpamExamples

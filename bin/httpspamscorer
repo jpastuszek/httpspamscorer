@@ -106,14 +106,15 @@ Application.new('httpspamscorer', port: 4000) do
 
 							symbols = result.keys.grep /[A-Z]/
 							log.with_meta_context(
-								'message-id' => msg['message-id'],
-								'from' => headers['From'],
-								'rcpt' => headers['Rcpt'],
+								'message-id' => mail.message_id,
+								'from' => mail.from,
+								'to' => mail.to,
 								'ip' => headers['Ip'],
 								'score' => result['score'],
 								'required_score' => result['required_score'],
-								'result' => result['is_spam'] ? 'spam' : 'ham',
-								'action' => result['action']
+								'is_spam' => result['is_spam'],
+								'action' => result['action'],
+								'symbols' => symbols
 							) do
 								log.info{"check result: score: #{result['score']}/#{result['required_score']} (#{result['is_spam'] ? 'spam' : 'ham'}), action: #{result['action']}, symbols: #{symbols.map{|sym| "#{sym}(#{result[sym]['score']})"}.join(', ')}"}
 							end
