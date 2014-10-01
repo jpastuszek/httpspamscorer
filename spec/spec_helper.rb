@@ -159,11 +159,11 @@ module SpamExamples
 	end
 end
 
-def pj(json)
-	puts JSON.pretty_generate(JSON.parse(json))
-end
-
 module HTTPHelpers
+	def pj(json)
+		puts JSON.pretty_generate(JSON.parse(json))
+	end
+
 	def when_i_make_get_request_to(uri)
 		@resp = http.get path: uri
 	end
@@ -201,6 +201,10 @@ module HTTPHelpers
 
 	def then_json_response_should_be(matcher)
 		expect(@json_resp).to matcher
+	end
+
+	def then_json_response_should_not_be(matcher)
+		expect(@json_resp).not_to matcher
 	end
 end
 

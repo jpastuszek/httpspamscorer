@@ -10,6 +10,19 @@ require 'httpspamscorer/error_reporter'
 Application.new('httpspamscorer', port: 4000) do
 	cli do
 		description 'Spam Soring HTTP server'
+
+		option :backend_host,
+			short: :B,
+			default: 'localhost'
+		option :backend_normal_port,
+			short: :P,
+			cast: Integer,
+			default: 11333
+		option :backend_control_port,
+			short: :C,
+			cast: Integer,
+			default: 11334
+
 		version (Pathname.new(__FILE__).dirname + '..' + 'VERSION').read
 	end
 
@@ -17,6 +30,9 @@ Application.new('httpspamscorer', port: 4000) do
 	end
 
 	main do |settings|
+		Controller.settings[:normal] = Excon.new("http://#{settings.backend_host}:#{settings.backend_normal_port}", read_timeout: 60, :persistent => true)
+		Controller.settings[:control] = Excon.new("http://#{settings.backend_host}:#{settings.backend_control_port}", read_timeout: 60, :persistent => true)
+
 		class HTTPSpamScorer < Controller
 			extend Stats
 			def_stats(
@@ -35,7 +51,13 @@ Application.new('httpspamscorer', port: 4000) do
 			StatsReporter << raindrops_stats
 			StatsReporter << Plugin::ResponseHelpers.stats
 
-			normal = Excon.new('http://dev.jp-spam:11333', read_timeout: 4) #, :persistent => true)
+			def normal
+				@normal ||= settings[:normal]
+			end
+
+			def control
+				@control ||= settings[:control]
+			end
 
 			self.define do
 				HTTPSpamScorer.stats.incr_total_requests
@@ -56,54 +78,71 @@ Application.new('httpspamscorer', port: 4000) do
 					write_plain 200, 'HTTP Spam Scorer'
 				end
 
+				def handle_backend_response(resp)
+					msg = JSON.parse(resp.body)
+					if msg.key? 'error'
+						log.error "backend returned error: #{msg}"
+						write_json 500, msg
+						halt(res.finish)
+					end
+					msg
+				end
+
 				on post do
+					msg = JSON.parse(req.body.read.to_s)
+					mail = ReconstructedMail.from_hash(msg)
+
 					on 'check' do
-						msg = JSON.parse(req.body.read.to_s)
+						on root do
+							headers = {}
 
-						mail = ReconstructedMail.from_hash(msg)
-
-						headers = {}
-
-						# Use provided or first Received header entry (latest?) that should be most trustworthy to determine context data
-						received = msg['received'] || mail.header['Received'].map(&:value).select{|val| val =~ /^from /}.first
-						begin
-							helo, ip, hostname, to =  *received.match(/from (?:\[[^ ]+\]|([^\[][^ ]+)) \((?:[^ ]+ )?\[([^\]]+)\]\)(?: by ([^ ]+))?(?:.* for <([^>]+)>)?/).captures
-
-							headers['Hostname'] = hostname if hostname
-							headers['Helo'] = helo if helo
-							headers['Ip'] = ip if ip
-							headers['Rcpt'] = to if to
-							log.debug "using context headers from: #{received}"
-						rescue
-							log.warn "can't parse received_for string: #{received}"
-						end if received
-
-						# If we still didn't get the recipient try looking for it in another Received headers
-						unless headers['Rcpt']
-							received_for = mail.header['Received'].map(&:value).select{|val| val =~ / for </}.first
+							# Use provided or first Received header entry (latest?) that should be most trustworthy to determine context data
+							received = msg['received'] || mail.header['Received'].map(&:value).select{|val| val =~ /^from /}.first
 							begin
-								to = received_for.match(/for <([^>]+)>/).captures.first
+								helo, ip, hostname, to =  *received.match(/from (?:\[[^ ]+\]|([^\[][^ ]+)) \((?:[^ ]+ )?\[([^\]]+)\]\)(?: by ([^ ]+))?(?:.* for <([^>]+)>)?/).captures
 
+								headers['Hostname'] = hostname if hostname
+								headers['Helo'] = helo if helo
+								headers['Ip'] = ip if ip
 								headers['Rcpt'] = to if to
-								log.debug "using Rcpt from: #{received_for}"
+								log.debug "using context headers from: #{received}"
 							rescue
-								log.warn "can't parse received string: #{received_for}"
-							end if received_for
-						end
+								log.warn "can't parse received_for string: #{received}"
+							end if received
 
-						headers['Hostname'] = msg['hostname'] if msg['hostname']
-						headers['User'] = msg['user'] if msg['user']
-						headers['Deliver-To'] = msg['deliver-to'] if msg['deliver-to']
-						headers['Helo'] = msg['helo'] if msg['helo']
-						headers['Ip'] = msg['ip'] if msg['ip']
-						headers['From'] = msg['from'] if msg['from']
-						headers['Rcpt'] = msg['rcpt'] if msg['rcpt']
+							# If we still didn't get the recipient try looking for it in another Received headers
+							unless headers['Rcpt']
+								received_for = mail.header['Received'].map(&:value).select{|val| val =~ / for </}.first
+								begin
+									to = received_for.match(/for <([^>]+)>/).captures.first
 
-						log.info "checking e-mail with context headers: #{headers}"
+									headers['Rcpt'] = to if to
+									log.debug "using Rcpt from: #{received_for}"
+								rescue
+									log.warn "can't parse received string: #{received_for}"
+								end if received_for
+							end
 
-						resp = normal.post path: '/check', headers: headers, body: mail.to_s
-						msg = JSON.parse(resp.body)
-						if result = msg['default']
+							headers['Hostname'] = msg['hostname'] if msg['hostname']
+							headers['User'] = msg['user'] if msg['user']
+							headers['Deliver-To'] = msg['deliver-to'] if msg['deliver-to']
+							headers['Helo'] = msg['helo'] if msg['helo']
+							headers['Ip'] = msg['ip'] if msg['ip']
+							headers['From'] = msg['from'] if msg['from']
+							headers['Rcpt'] = msg['rcpt'] if msg['rcpt']
+
+							log.info "checking e-mail with context headers: #{headers}"
+
+							resp = normal.post path: '/check', headers: headers, body: mail.to_s
+							msg = handle_backend_response(resp)
+
+							unless msg.key? 'default'
+								log.error "backend did not return 'default' result set: #{msg}"
+								write_json 500, msg
+								halt(res.finish)
+							end
+
+							result = msg['default']
 							log.debug{"check results: #{result}"}
 
 							symbols = result.keys.grep /[A-Z]/
@@ -125,9 +164,22 @@ Application.new('httpspamscorer', port: 4000) do
 
 							HTTPSpamScorer.stats.incr_total_emails_checked
 							result['is_spam'] ? HTTPSpamScorer.stats.incr_total_spam : HTTPSpamScorer.stats.incr_total_ham
-						else
-							log.error "backend returned error: #{msg}"
-							write_json 500, msg
+						end
+					end
+
+					on 'learn' do
+						on 'spam' do
+							on root do
+								resp = control.post path: '/learnspam', body: mail.to_s
+								write_json 200, handle_backend_response(resp)
+							end
+						end
+
+						on 'ham' do
+							on root do
+								resp = control.post path: '/learnham', body: mail.to_s
+								write_json 200, handle_backend_response(resp)
+							end
 						end
 					end
 				end
