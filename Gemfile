@@ -1,8 +1,8 @@
 source 'http://rubygems.org'
 ruby '1.9.3'
 
-#gem 'unicorn-cuba-base', '~> 1.2.2'
-gem 'unicorn-cuba-base', path: '../unicorn-cuba-base'
+gem 'unicorn-cuba-base', '~> 1.3'
+#gem 'unicorn-cuba-base', path: '../unicorn-cuba-base'
 gem 'mail', '~> 2.6.1'
 
 group :development do
