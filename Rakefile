@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "httpspamscorer"
   gem.homepage = "http://github.com/jpastuszek/httpspamscorer"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = 'Sends reconstructed e-mail to RSpamd backend for checking and learning.'
+  gem.description = 'It takes parsed e-mail headers, text and html body and reconstructs it into e-mail message that then is provided to RSpmad backed for checking or learning.'
   gem.email = "jpastuszek@gmail.com"
   gem.authors = ["Jakub Pastuszek"]
   # dependencies defined in Gemfile

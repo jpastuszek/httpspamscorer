@@ -1,9 +1,11 @@
 = httpspamscorer
 
-Description goes here.
+Sends reconstructed e-mail to RSpamd backend for checking and learning.
+
+It takes parsed e-mail headers, text and html body and reconstructs it into e-mail message that then is provided to RSpmad backed for checking or learning.
 
 == Contributing to httpspamscorer
- 
+
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
 * Fork the project.
@@ -14,6 +16,6 @@ Description goes here.
 
 == Copyright
 
-Copyright (c) 2014 Jakub Pastuszek. See LICENSE.txt for
-further details.
+Copyright (c) 2014 Global Medical Treatment Ltd trading as WhatClinic.com.
+See LICENSE.txt for further details.
 
