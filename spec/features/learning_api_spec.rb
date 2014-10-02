@@ -54,6 +54,19 @@ feature 'e-mail learning API', httpspamscorer: :server, with: :spam_examples do
 end
 
 feature 'learning API statistics', httpspamscorer: :server, with: :spam_examples do
+	scenario 'retrieving learn statistics' do
+		given_fresh_httpspamscorer_instance
+
+		when_i_make_get_request_to '/stats'
+
+		then_response_status_should_be 200
+		then_response_should_contain_plain_text_with(
+			a_string_including('total_emails_learned: 0')
+			.and including('total_spam_learned: 0')
+			.and including('total_ham_learned: 0')
+		)
+	end
+
 	def when_i_learn_spam
 		when_i_make_JSON_post_request_to '/learn/spam', with_json: {
 			'message-headers' => spam_headers,
@@ -66,19 +79,6 @@ feature 'learning API statistics', httpspamscorer: :server, with: :spam_examples
 			'message-headers' => spam_headers,
 			'body-plain' => spam_text_part
 		}
-	end
-
-	scenario 'retrieving learn statistics' do
-		given_fresh_httpspamscorer_instance
-
-		when_i_make_get_request_to '/stats'
-
-		then_response_status_should_be 200
-		then_response_should_contain_plain_text_with(
-			a_string_including('total_emails_learned: 0')
-			.and including('total_spam_learned: 0')
-			.and including('total_ham_learned: 0')
-		)
 	end
 
 	scenario 'updating learn statistics' do

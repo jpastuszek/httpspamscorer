@@ -147,15 +147,37 @@ feature 'server logging of e-mail checking', httpspamscorer: :server, with: :spa
 	end
 end
 
-feature 'checking API statistics', httpspamscorer: :server do
+feature 'checking API statistics', httpspamscorer: :server, with: :spam_examples do
 	scenario 'retrieving check statistics' do
+		given_fresh_httpspamscorer_instance
 		when_i_make_get_request_to '/stats'
 
 		then_response_status_should_be 200
 		then_response_should_contain_plain_text_with(
-			a_string_including('total_emails_checked: ')
-			.and including('total_spam: ')
-			.and including('total_ham: ')
+			a_string_including('total_emails_checked: 0')
+			.and including('total_spam: 0')
+			.and including('total_ham: 0')
+		)
+	end
+
+	def when_i_check_ham
+		when_i_make_JSON_post_request_to '/check', with_json: {
+			'message-headers' => ham_headers,
+			'body-plain' => ham_text_part
+		}
+	end
+
+	scenario 'updating check statistics' do
+		given_fresh_httpspamscorer_instance
+
+		when_i_check_ham
+		when_i_make_get_request_to '/stats'
+
+		then_response_status_should_be 200
+		then_response_should_contain_plain_text_with(
+			a_string_including('total_emails_checked: 1')
+			.and including('total_spam: 0')
+			.and including('total_ham: 1')
 		)
 	end
 end

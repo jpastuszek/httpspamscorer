@@ -56,7 +56,7 @@ module RSpamd
 			process.ready_when_log_includes 'main: calling sigsuspend'
 
 			# get rid of learned stats
-			process.refresh_command 'test -f bayes.*am && rm -f bayes.*am'
+			process.refresh_command 'test -f bayes.ham && rm -f bayes.ham; test -f bayes.spam && rm -f bayes.spam'
 			#process.logging_enabled
 		end.instance
 
