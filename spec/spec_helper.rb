@@ -113,6 +113,10 @@ module HTTPSpamScorer
 		#puts "Log file: #{@httpspamscorer.log_file}"
 	end
 
+	def given_fresh_httpspamscorer_instance
+		@httpspamscorer.refresh.wait_ready
+	end
+
 	def given_empty_log_file
 		@httpspamscorer.log_file.truncate(0)
 	end

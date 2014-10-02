@@ -41,7 +41,10 @@ Application.new('httpspamscorer', port: 4000) do
 				:total_errors,
 				:total_emails_checked,
 				:total_spam,
-				:total_ham
+				:total_ham,
+				:total_emails_learned,
+				:total_spam_learned,
+				:total_ham_learned
 			)
 
 			raindrops_stats = Raindrops::Middleware::Stats.new
@@ -170,6 +173,9 @@ Application.new('httpspamscorer', port: 4000) do
 							on root do
 								resp = control.post path: '/learnspam', body: mail.to_s
 								write_json 200, handle_backend_response(resp)
+
+								HTTPSpamScorer.stats.incr_total_spam_learned
+								HTTPSpamScorer.stats.incr_total_emails_learned
 							end
 						end
 
@@ -177,6 +183,9 @@ Application.new('httpspamscorer', port: 4000) do
 							on root do
 								resp = control.post path: '/learnham', body: mail.to_s
 								write_json 200, handle_backend_response(resp)
+
+								HTTPSpamScorer.stats.incr_total_ham_learned
+								HTTPSpamScorer.stats.incr_total_emails_learned
 							end
 						end
 					end
