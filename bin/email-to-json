@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require 'mail'
+require 'pathname'
+require 'json'
+
+mail = Mail.new($stdin.read)
+puts JSON.dump(
+	'message-headers' => mail.header.to_a.map{|header| [header.name, header.value]},
+	'body-plain' => mail.text_part.body.to_s.encode("UTF-8", :invalid => :replace, :undef => :replace),
+	'body-html' => mail.html_part.body.to_s.encode("UTF-8", :invalid => :replace, :undef => :replace)
+)
