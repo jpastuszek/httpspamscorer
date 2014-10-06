@@ -44,6 +44,7 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 					'message-headers' => ham_headers,
 					'body-plain' => ham_text_part,
 					'helo' => 'fdsa', # verify SMTP hello message - HFILTER_HELO_NOT_FQDN
+					'hostname' => 'fdsa', # verify SMTP message - HFILTER_HELO_NOT_FQDN
 					'ip' => '192.168.0.1', # verify SMTP hello message - HFILTER_HELO_NOT_FQDN
 					'from' => 'bfalsdh@compuware.com', # verify sender with email - FORGED_SENDER
 					'rcpt' => 'dfas@whatclinic.com', # verify recipient with email - FORGED_RECIPIENTS
