@@ -5,8 +5,16 @@ require 'pathname'
 require 'json'
 
 mail = Mail.new($stdin.read)
-puts JSON.dump(
+
+map = {
 	'message-headers' => mail.header.to_a.map{|header| [header.name, header.value]},
-	'body-plain' => mail.text_part.body.to_s.encode("UTF-8", :invalid => :replace, :undef => :replace),
-	'body-html' => mail.html_part.body.to_s.encode("UTF-8", :invalid => :replace, :undef => :replace)
+}
+
+map['body-plain'] = mail.text_part.body.to_s.encode("UTF-8", :invalid => :replace, :undef => :replace) if mail.text_part
+map['body-html'] = mail.html_part.body.to_s.encode("UTF-8", :invalid => :replace, :undef => :replace) if mail.html_part
+
+map['body-plain'] = mail.body.to_s.encode("UTF-8", :invalid => :replace, :undef => :replace) unless map['body-plain']
+
+puts JSON.dump(
+	map
 )
