@@ -62,6 +62,20 @@ Application.new('httpspamscorer', port: 4000) do
 				@control ||= settings[:control]
 			end
 
+			class ::ReconstructedMail
+				# helper to find Received header value matching regexp
+				def find_received(regexp)
+					case header['Received']
+					when String
+						header['Received'] =~ regexp and header['Received']
+					when Array
+						header['Received'].map(&:value).select{|val| val =~ regexp}.first
+					else
+						nil
+					end
+				end
+			end
+
 			self.define do
 				HTTPSpamScorer.stats.incr_total_requests
 				on error? do
@@ -98,8 +112,8 @@ Application.new('httpspamscorer', port: 4000) do
 							headers = {}
 
 							# Use provided or first Received header entry (latest?) that should be most trustworthy to determine context data
-							received = msg['received'] || mail.header['Received'].map(&:value).select{|val| val =~ /^from /}.first
-							begin
+							received = msg['received'] || mail.find_received(/^from /)
+							received and begin
 								helo, ip, hostname, to =  *received.match(/from (?:\[[^ ]+\]|([^\[][^ ]+)) \((?:[^ ]+ )?\[([^\]]+)\]\)(?: by ([^ ]+))?(?:.* for <([^>]+)>)?/).captures
 
 								headers['Hostname'] = hostname if hostname
@@ -109,12 +123,12 @@ Application.new('httpspamscorer', port: 4000) do
 								log.debug "using context headers from: #{received}"
 							rescue
 								log.warn "can't parse received_for string: #{received}"
-							end if received
+							end
 
 							# If we still didn't get the recipient try looking for it in another Received headers
 							unless headers['Rcpt']
-								received_for = mail.header['Received'].map(&:value).select{|val| val =~ / for </}.first
-								begin
+								received_for = mail.find_received(/ for </)
+								received_for and begin
 									to = received_for.match(/for <([^>]+)>/).captures.first
 
 									headers['Rcpt'] = to if to

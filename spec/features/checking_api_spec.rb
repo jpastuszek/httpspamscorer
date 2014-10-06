@@ -84,6 +84,42 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 				)
 			end
 		end
+
+		context 'bug fixes' do
+			scenario 'works without Received headers' do
+				when_i_make_JSON_post_request_to '/check', with_json: {
+					'message-headers' => ham_headers.reject{|h, v| h == 'Received'},
+					'body-plain' => ham_text_part
+				}
+
+				then_response_status_should_be 200
+				then_response_should_contain_json_with a_collection_including(
+					'is_spam' => false,
+					'is_skipped' => false,
+					'score' => an_instance_of(Float),
+					'required_score' => an_instance_of(Float),
+					'action' => an_instance_of(String),
+					'R_SPF_SOFTFAIL' => a_collection_including('score' => an_instance_of(Float)), # no Received checked
+				)
+			end
+
+			scenario 'works with single Received header' do
+				when_i_make_JSON_post_request_to '/check', with_json: {
+					'message-headers' => ham_headers.reject{|h, v| h == 'Received'} << ['Received', 'balsh'],
+					'body-plain' => ham_text_part
+				}
+
+				then_response_status_should_be 200
+				then_response_should_contain_json_with a_collection_including(
+					'is_spam' => false,
+					'is_skipped' => false,
+					'score' => an_instance_of(Float),
+					'required_score' => an_instance_of(Float),
+					'action' => an_instance_of(String),
+					'R_SPF_SOFTFAIL' => a_collection_including('score' => an_instance_of(Float)), # no Received checked
+				)
+			end
+		end
 	end
 
 	context 'error handling' do
@@ -112,14 +148,26 @@ feature 'e-mail checking API', httpspamscorer: :server, with: :spam_examples do
 			then_response_should_contain_json_with_error_message 'no text or html body provided'
 		end
 
-		scenario 'bad message headers' do
-			when_i_make_JSON_post_request_to '/check', with_json: {
-				'message-headers' => ['foobar'],
-				'body-plain' => ham_text_part
-			}
+		context 'bad message headers' do
+			scenario 'not an array' do
+				when_i_make_JSON_post_request_to '/check', with_json: {
+					'message-headers' => 'foobar',
+					'body-plain' => ham_text_part
+				}
 
-			then_response_status_should_be 400
-			then_response_should_contain_json_with_error_message 'no header name or value'
+				then_response_status_should_be 400
+				then_response_should_contain_json_with_error_message 'headers not array'
+			end
+
+			scenario 'not an array of arrays' do
+				when_i_make_JSON_post_request_to '/check', with_json: {
+					'message-headers' => ['foobar'],
+					'body-plain' => ham_text_part
+				}
+
+				then_response_status_should_be 400
+				then_response_should_contain_json_with_error_message 'no header name or value'
+			end
 		end
 	end
 end
